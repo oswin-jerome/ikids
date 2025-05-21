@@ -46,11 +46,11 @@ const data = {
             items: [
                 {
                     title: 'List All',
-                    url: '#',
+                    url: route('admin.products.index'),
                 },
                 {
                     title: 'Create',
-                    url: '#',
+                    url: route('admin.products.create'),
                 },
             ],
         },
