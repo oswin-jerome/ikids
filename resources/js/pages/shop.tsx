@@ -8,11 +8,11 @@ const ShopPage = ({ products }: { products: Product[] }) => {
     return (
         <WebLayout>
             <Head title="Shop" />
-            <div className="container grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="container mt-20 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {products.map((product) => {
                     return (
                         <Card className="overflow-clip pt-0">
-                            <img alt="img" src="/assets/images/Banner_1.jpg" className="aspect-square object-cover" />
+                            <img alt="img" src="/assets/images/Banner_1.jpg" className="aspect-[4/3] object-cover lg:aspect-square" />
                             <CardContent>
                                 <h4 className="font-bold">{product.name}</h4>
                                 <p>{product.description}</p>

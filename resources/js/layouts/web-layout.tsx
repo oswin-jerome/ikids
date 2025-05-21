@@ -58,13 +58,15 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="min-w-[300px] lg:min-w-lg">
                                 <DropdownMenuLabel>Menu</DropdownMenuLabel>
-
-                                <DropdownMenuItem>Home</DropdownMenuItem>
-                                <DropdownMenuItem>Shop</DropdownMenuItem>
+                                <Link href="/">
+                                    <DropdownMenuItem>Home</DropdownMenuItem>
+                                </Link>
+                                <Link href={route('shop')}>
+                                    <DropdownMenuItem>Shop</DropdownMenuItem>
+                                </Link>
                                 <DropdownMenuItem>Schools</DropdownMenuItem>
                                 <DropdownMenuItem>FAQs</DropdownMenuItem>
                                 <DropdownMenuItem>Blogs</DropdownMenuItem>
-
                                 <DropdownMenuSeparator />
                                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                                 <DropdownMenuItem>Profile</DropdownMenuItem>
