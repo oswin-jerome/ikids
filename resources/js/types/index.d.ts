@@ -53,4 +53,6 @@ export interface Product {
     selling_price: number;
     created_at: Date;
     updated_at: Date;
+
+    cover: string;
 }

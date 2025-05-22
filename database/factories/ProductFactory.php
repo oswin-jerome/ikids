@@ -18,7 +18,7 @@ class ProductFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'sku' => fake()->unique()->text(),
+            'sku' => fake()->unique()->text(5),
             'description' => fake()->realText(),
             'actual_price' => fake()->randomNumber(),
             'selling_price' => fake()->randomNumber(),

@@ -6,10 +6,10 @@ import { Product } from '@/types';
 const ProductPage = ({ product }: { product: Product }) => {
     return (
         <WebLayout>
-            <SeoHead description={product.description} title={product.name} />
+            <SeoHead description={product.description} title={product.name} image={product.cover} />
             <div className="container mt-20 gap-6 lg:grid lg:grid-cols-[500px_auto]">
                 <div className="grid place-items-center">
-                    <img src="/assets/images/Banner_1.jpg" className="aspect-[3/4] max-h-[50dvh] object-cover" />
+                    <img src={product.cover} className="aspect-[3/4] max-h-[50dvh] object-cover" />
                 </div>{' '}
                 <div className="flex h-full flex-col justify-between py-6">
                     <div>

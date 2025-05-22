@@ -35,9 +35,14 @@ class AdminProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $data = $request->validated();
-        // $data['slug'] = Str:slugg
+        $data = $request->except("cover");
         $product = Product::create($data);
+        if ($request->hasFile("cover")) {
+            $product
+                ->addMedia($request->file("cover"))
+                ->preservingOriginal()
+                ->toMediaCollection("cover");
+        }
 
         return to_route('admin.products.index');;
     }

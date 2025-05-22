@@ -29,6 +29,7 @@ class StoreProductRequest extends FormRequest
             "type" => "nullable|in:single,combo",
             "actual_price" => "required|numeric",
             "selling_price" => "required|numeric",
+            "cover" => "required|image"
         ];
     }
 }

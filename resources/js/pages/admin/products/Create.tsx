@@ -23,13 +23,22 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const AdminProductsCreate = () => {
-    const { data, setData, processing, errors, post, reset } = useForm({
+    const { data, setData, processing, errors, post } = useForm<{
+        name: string;
+        sku: string;
+        description: string;
+        type: string;
+        selling_price: number;
+        actual_price: number;
+        cover: File | null | undefined;
+    }>({
         name: '',
         sku: '',
         description: '',
         type: 'single',
         selling_price: 0,
         actual_price: 0,
+        cover: null,
     });
 
     return (
@@ -101,6 +110,11 @@ const AdminProductsCreate = () => {
                                 </SelectContent>
                             </Select>
                             <InputError message={errors.type} />
+                        </div>
+                        <div>
+                            <Label>Cover Image</Label>
+                            <Input type="file" onChange={(e) => setData('cover', e.target.files?.item(0))} />
+                            <InputError message={errors.cover} />
                         </div>
                     </CardContent>
                     <CardFooter>

@@ -17,7 +17,7 @@ const ShopPage = ({ products }: { products: Product[] }) => {
                     return (
                         <Card className="gap-2 overflow-clip pt-0 pb-0">
                             <div className="p-2">
-                                <img alt="img" src="/assets/images/Banner_1.jpg" className="aspect-[4/3] rounded object-cover lg:aspect-square" />
+                                <img alt="img" src={product.cover} className="aspect-[4/3] rounded object-cover lg:aspect-square" />
                             </div>
                             <CardContent className="mt-0 p-2 pt-0">
                                 <h4 className="font-bold">{product.name}</h4>
