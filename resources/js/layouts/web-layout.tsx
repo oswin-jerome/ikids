@@ -18,7 +18,7 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
 
     return (
         <div>
-            <div className="bg-background sticky top-0 shadow">
+            <div className="bg-background sticky top-0 z-50 shadow">
                 <nav className="py-1- container flex items-center justify-between">
                     <img src="/assets/images/logo.webp" className="max-w-24 lg:max-w-32" />
                     <ul className="hidden items-center gap-12 lg:flex">
