@@ -15,11 +15,13 @@ const ShopPage = ({ products }: { products: Product[] }) => {
             <div className="container mt-20 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {products.map((product) => {
                     return (
-                        <Card className="overflow-clip pt-0">
-                            <img alt="img" src="/assets/images/Banner_1.jpg" className="aspect-[4/3] object-cover lg:aspect-square" />
-                            <CardContent>
+                        <Card className="gap-2 overflow-clip pt-0 pb-0">
+                            <div className="p-2">
+                                <img alt="img" src="/assets/images/Banner_1.jpg" className="aspect-[4/3] rounded object-cover lg:aspect-square" />
+                            </div>
+                            <CardContent className="mt-0 p-2 pt-0">
                                 <h4 className="font-bold">{product.name}</h4>
-                                <p>{product.description}</p>
+                                <p className="line-clamp-1 text-sm text-black/50 dark:text-white">{product.description}</p>
                                 <div className="mt-2 flex items-center gap-2">
                                     <p>Rs. {product.selling_price}</p>
                                     <span className="text-sm italic line-through opacity-50">Rs. {product.actual_price}</span>
