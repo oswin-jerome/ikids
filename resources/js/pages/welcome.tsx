@@ -1,15 +1,18 @@
+import SeoHead from '@/components/SeoHead';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import WebLayout from '@/layouts/web-layout';
 import Features from '@/sections/Features';
 import WhatIsSkippy from '@/sections/WhatIsSkippy';
-import { Head } from '@inertiajs/react';
 
 export default function Welcome() {
     // const { auth } = usePage<SharedData>().props;
 
     return (
         <WebLayout>
-            <Head title="Buy Children's Book Online,Buy Children Magazine Subscription" />
+            <SeoHead
+                description="Online Children Bookstore - Buy books for kids online at low prices in India,Get best offers for Children Magazine subscriptions at i-kids.India's leading Magazine subscription company. Order online now. Special offers for libraries and schools"
+                title="Buy Children's Book Online,Buy Children Magazine Subscription"
+            />
 
             <Carousel opts={{}}>
                 <CarouselContent>

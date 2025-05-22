@@ -1,13 +1,17 @@
+import SeoHead from '@/components/SeoHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import WebLayout from '@/layouts/web-layout';
 import { Product } from '@/types';
-import { Head, Link } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 
 const ShopPage = ({ products }: { products: Product[] }) => {
     return (
         <WebLayout>
-            <Head title="Shop" />
+            <SeoHead
+                description="Online Children Bookstore - Buy books for kids online at low prices in India,Get best offers for Children Magazine subscriptions at i-kids.India's leading Magazine subscription company. Order online now. Special offers for libraries and schools"
+                title="Shop"
+            />
             <div className="container mt-20 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {products.map((product) => {
                     return (

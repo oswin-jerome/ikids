@@ -51,39 +51,16 @@
     {{-- <title>Buy Children's Book Online,Buy Children Magazine Subscription</title> --}}
     <meta name="title" inertia content={{ config('app.name', 'Laravel') }} />
     <meta property="twitter:title" inertia content={{ config('app.name', 'Laravel') }} />
+    <meta property="og:title" inertia content={{ config('app.name', 'Laravel') }} />
 
-    <meta name="description"
-        content="Online Children Bookstore - Buy
-books for kids online at low prices in India,Get best offers for
-Children Magazine subscriptions at i-kids.India’s leading Magazine
-subscription company. Order online now. Special offers for libraries
-and schools" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://i-kids.in/" />
-    <meta property="og:title" content="Buy Children's Book Online,Buy Children Magazine Subscription" />
-    <meta property="og:description"
-        content="Online Children Bookstore - Buy
-books for kids online at low prices in India,Get best offers for
-Children Magazine subscriptions at i-kids.India’s leading Magazine
-subscription company. Order online now. Special offers for libraries
-and schools" />
-    <meta property="og:image" content="/assets/images/logo.webp" />
+
+
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://i-kids.in/" />
-    <meta property="twitter:description"
-        content="Online Children Bookstore - Buy
-books for kids online at low prices in India,Get best offers for
-Children Magazine subscriptions at i-kids.India’s leading Magazine
-subscription company. Order online now. Special offers for libraries
-and schools" />
-    <meta property="twitter:image" content="/assets/images/logo.webp" />
-
-    <!-- Meta Tags Generated with https://metatags.io -->
-
 </head>
 
 <body class="font-sans antialiased">

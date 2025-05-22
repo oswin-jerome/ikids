@@ -1,12 +1,12 @@
+import SeoHead from '@/components/SeoHead';
 import { Button } from '@/components/ui/button';
 import WebLayout from '@/layouts/web-layout';
 import { Product } from '@/types';
-import { Head } from '@inertiajs/react';
 
 const ProductPage = ({ product }: { product: Product }) => {
     return (
         <WebLayout>
-            <Head title={product.name} />
+            <SeoHead description={product.description} title={product.name} />
             <div className="container mt-20 gap-6 lg:grid lg:grid-cols-[500px_auto]">
                 <div className="grid place-items-center">
                     <img src="/assets/images/Banner_1.jpg" className="aspect-[3/4] max-h-[50dvh] object-cover" />
