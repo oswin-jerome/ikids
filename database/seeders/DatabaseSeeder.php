@@ -21,5 +21,11 @@ class DatabaseSeeder extends Seeder
             'name' => 'Oswin Jerome',
             'email' => 'oswinjeromej@gmail.com',
         ]);
+
+        User::factory()->create([
+            'name' => 'Admin',
+            'email' => 'admin@i-kids.in',
+            "role" => "admin"
+        ]);
     }
 }
