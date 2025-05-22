@@ -9,7 +9,7 @@ export default function Welcome() {
 
     return (
         <WebLayout>
-            <Head title="Home" />
+            <Head title="Buy Children's Book Online,Buy Children Magazine Subscription" />
 
             <Carousel opts={{}}>
                 <CarouselContent>
