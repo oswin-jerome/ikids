@@ -24,7 +24,7 @@ const ShopPage = ({ products }: { products: Product[] }) => {
                                     <p>Rs. {product.selling_price}</p>
                                     <span className="text-sm italic line-through opacity-50">Rs. {product.actual_price}</span>
                                 </div>
-                                <Link href={route('shop.product', product.id)}>
+                                <Link href={route('shop.product', product.slug)}>
                                     <Button className="mt-4 w-full">Buy Now</Button>
                                 </Link>
                             </CardContent>

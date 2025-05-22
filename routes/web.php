@@ -14,7 +14,7 @@ Route::get('/shop', function () {
         "products" => $products
     ]);
 })->name('shop');
-Route::get('/shop/{product}', function (Product $product) {
+Route::get('/shop/{product:slug}', function (Product $product) {
 
     return Inertia::render('product', [
         "product" => $product

@@ -45,6 +45,7 @@ export interface User {
 export interface Product {
     id: number;
     sku: string;
+    slug: string;
     name: string;
     description: string;
     type: string;

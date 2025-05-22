@@ -35,7 +35,9 @@ class AdminProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-        $product = Product::create($request->validated());
+        $data = $request->validated();
+        // $data['slug'] = Str:slugg
+        $product = Product::create($data);
 
         return to_route('admin.products.index');;
     }
