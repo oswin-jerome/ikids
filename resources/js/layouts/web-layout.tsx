@@ -1,4 +1,5 @@
 import { Footer2 } from '@/components/footer2';
+import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -49,7 +50,32 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                                 </Button>
                             </Link>
                         )}
-                        {auth.user != null && <Link href="dashboard">DB</Link>}
+                        {auth.user != null && (
+                            <DropdownMenu>
+                                <DropdownMenuTrigger>
+                                    <Avatar className="bg-red-300" />
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="min-w-[300px] lg:min-w-lg">
+                                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                                    <Link href={route('user.profile')}>
+                                        <DropdownMenuItem>Profile</DropdownMenuItem>
+                                    </Link>
+                                    <Link href={route('user.password')}>
+                                        <DropdownMenuItem>Change Password</DropdownMenuItem>
+                                    </Link>
+                                    <Link href={route('user.orders')}>
+                                        <DropdownMenuItem>Orders</DropdownMenuItem>
+                                    </Link>
+                                    <Link href={route('user.subscriptions')}>
+                                        <DropdownMenuItem>Subscriptions</DropdownMenuItem>
+                                    </Link>
+                                    <Link method="post" href={route('logout')} className="w-full">
+                                        <DropdownMenuItem>Logout</DropdownMenuItem>
+                                    </Link>
+                                    {auth.user && auth.user.role == 'admin' && <DropdownMenuItem>Admin Dashboard</DropdownMenuItem>}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        )}
                         <DropdownMenu>
                             <DropdownMenuTrigger className="lg:hidden">
                                 <Button variant={'ghost'}>
