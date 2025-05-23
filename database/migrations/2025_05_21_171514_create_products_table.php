@@ -19,6 +19,7 @@ return new class extends Migration
             $table->longText("description");
             $table->enum("type", ["single", "combo"])->default("single");
             $table->double("actual_price");
+            $table->integer("current_stock")->default(0);
             $table->double("selling_price");
             $table->timestamps();
         });

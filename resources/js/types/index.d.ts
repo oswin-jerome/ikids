@@ -44,6 +44,7 @@ export interface User {
 
 export interface Product {
     id: number;
+    current_stock: number;
     sku: string;
     slug: string;
     name: string;

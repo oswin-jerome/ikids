@@ -52,6 +52,10 @@ const data = {
                     title: 'Create',
                     url: route('admin.products.create'),
                 },
+                {
+                    title: 'Add Stock',
+                    url: route('admin.stocks.create'),
+                },
             ],
         },
     ],

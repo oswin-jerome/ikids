@@ -44,7 +44,7 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                             Subscribe
                         </Button>
                         {auth.user == null && (
-                            <Link href="login">
+                            <Link href={route('login')}>
                                 <Button className="cursor-pointer" variant={'outline'}>
                                     Login
                                 </Button>
@@ -72,7 +72,11 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                                     <Link method="post" href={route('logout')} className="w-full">
                                         <DropdownMenuItem>Logout</DropdownMenuItem>
                                     </Link>
-                                    {auth.user && auth.user.role == 'admin' && <DropdownMenuItem>Admin Dashboard</DropdownMenuItem>}
+                                    {auth.user && auth.user.role == 'admin' && (
+                                        <Link href={route('dashboard')}>
+                                            <DropdownMenuItem>Admin Dashboard</DropdownMenuItem>
+                                        </Link>
+                                    )}
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         )}
