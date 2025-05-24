@@ -28,19 +28,19 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                         <NavigationMenu>
                             <NavigationMenuList className="space-x-4">
                                 <NavigationMenuItem>
-                                    <Link href={route('home')}>
-                                        <NavigationMenuLink asChild>Home</NavigationMenuLink>
-                                    </Link>
+                                    <NavigationMenuLink asChild>
+                                        <Link href={route('home')}>Home</Link>
+                                    </NavigationMenuLink>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
-                                    <Link href={route('shop')}>
-                                        <NavigationMenuLink asChild>Shop</NavigationMenuLink>
-                                    </Link>
+                                    <NavigationMenuLink asChild>
+                                        <Link href={route('shop')}>Shop</Link>
+                                    </NavigationMenuLink>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
-                                    <Link href="#">
-                                        <NavigationMenuLink asChild>Schools</NavigationMenuLink>
-                                    </Link>
+                                    <NavigationMenuLink asChild>
+                                        <Link href="#">Schools</Link>
+                                    </NavigationMenuLink>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <NavigationMenuTrigger className="font-normal">Magazines</NavigationMenuTrigger>
@@ -66,14 +66,14 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                                     </NavigationMenuContent>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
-                                    <Link href="#">
-                                        <NavigationMenuLink asChild>FAQs</NavigationMenuLink>
-                                    </Link>
+                                    <NavigationMenuLink asChild>
+                                        <Link href="#">FAQs</Link>
+                                    </NavigationMenuLink>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
-                                    <Link href="#">
-                                        <NavigationMenuLink asChild>Blogs</NavigationMenuLink>
-                                    </Link>
+                                    <NavigationMenuLink asChild>
+                                        <Link href="#">Blogs</Link>
+                                    </NavigationMenuLink>
                                 </NavigationMenuItem>
                             </NavigationMenuList>
                         </NavigationMenu>
