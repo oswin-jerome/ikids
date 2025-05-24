@@ -81,7 +81,7 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                             </DropdownMenu>
                         )}
                         <DropdownMenu>
-                            <DropdownMenuTrigger className="lg:hidden">
+                            <DropdownMenuTrigger className="lg:hidden" asChild>
                                 <Button variant={'ghost'}>
                                     <Menu />
                                 </Button>
