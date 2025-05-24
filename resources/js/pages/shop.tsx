@@ -12,7 +12,7 @@ const ShopPage = ({ products }: { products: Product[] }) => {
                 description="Online Children Bookstore - Buy books for kids online at low prices in India,Get best offers for Children Magazine subscriptions at i-kids.India's leading Magazine subscription company. Order online now. Special offers for libraries and schools"
                 title="Shop"
             />
-            <div className="container mt-20 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="container mt-10 grid gap-4 md:grid-cols-2 lg:mt-20 lg:grid-cols-3 xl:grid-cols-4">
                 {products.map((product) => {
                     return (
                         <Card className="gap-2 overflow-clip pt-0 pb-0">

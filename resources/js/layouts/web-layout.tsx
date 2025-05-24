@@ -1,14 +1,7 @@
 import { Footer2 } from '@/components/footer2';
 import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -21,6 +14,7 @@ import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Menu } from 'lucide-react';
 import { ReactNode } from 'react';
+import MagazineNav from './MagazineNav';
 
 const WebLayout = ({ children }: { children: ReactNode }) => {
     const { auth } = usePage<SharedData>().props;
@@ -35,17 +29,17 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                             <NavigationMenuList className="space-x-4">
                                 <NavigationMenuItem>
                                     <Link href={route('home')}>
-                                        <NavigationMenuLink>Home</NavigationMenuLink>
+                                        <NavigationMenuLink asChild>Home</NavigationMenuLink>
                                     </Link>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <Link href={route('shop')}>
-                                        <NavigationMenuLink>Shop</NavigationMenuLink>
+                                        <NavigationMenuLink asChild>Shop</NavigationMenuLink>
                                     </Link>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <Link href="#">
-                                        <NavigationMenuLink>Schools</NavigationMenuLink>
+                                        <NavigationMenuLink asChild>Schools</NavigationMenuLink>
                                     </Link>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
@@ -53,12 +47,12 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                                     <NavigationMenuContent>
                                         <ul className="w-[300px]">
                                             <li>
-                                                <Link href={route('skippy')}>
-                                                    <NavigationMenuLink>
+                                                <NavigationMenuLink asChild>
+                                                    <Link href={route('skippy')}>
                                                         <p className="font-bold">Skippy</p>
                                                         <p className="text-slate-500">Skippy - the Kids Activity Magazine</p>
-                                                    </NavigationMenuLink>
-                                                </Link>
+                                                    </Link>
+                                                </NavigationMenuLink>
                                             </li>
                                             <li>
                                                 <NavigationMenuLink asChild>
@@ -73,12 +67,12 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <Link href="#">
-                                        <NavigationMenuLink>FAQs</NavigationMenuLink>
+                                        <NavigationMenuLink asChild>FAQs</NavigationMenuLink>
                                     </Link>
                                 </NavigationMenuItem>
                                 <NavigationMenuItem>
                                     <Link href="#">
-                                        <NavigationMenuLink>Blogs</NavigationMenuLink>
+                                        <NavigationMenuLink asChild>Blogs</NavigationMenuLink>
                                     </Link>
                                 </NavigationMenuItem>
                             </NavigationMenuList>
@@ -140,13 +134,10 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                                     <DropdownMenuItem>Shop</DropdownMenuItem>
                                 </Link>
                                 <DropdownMenuItem>Schools</DropdownMenuItem>
+                                <MagazineNav />
+
                                 <DropdownMenuItem>FAQs</DropdownMenuItem>
                                 <DropdownMenuItem>Blogs</DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                                <DropdownMenuItem>Profile</DropdownMenuItem>
-                                <DropdownMenuItem>Orders</DropdownMenuItem>
-                                <DropdownMenuItem>Subscriptions</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
