@@ -9,6 +9,14 @@ Route::get('/', function () {
 	return Inertia::render('landing');
 })->name('home');
 
+Route::get('/skippy', function () {
+	return Inertia::render('skippy');
+})->name('skippy');
+
+Route::get('/scikids', function () {
+	return Inertia::render('scikids');
+})->name('scikids');
+
 Route::get('/shop', function () {
 	$products = Product::with("media")->get();
 	return Inertia::render('shop', [

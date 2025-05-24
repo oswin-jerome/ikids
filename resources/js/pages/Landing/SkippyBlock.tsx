@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import { Link } from '@inertiajs/react';
 
 const SkippyBlock = () => {
     return (
@@ -10,9 +11,11 @@ const SkippyBlock = () => {
                 <div>
                     <img alt="Book 1" src="/assets/books/book1.png" className="w-full rounded-lg" />
                     <div className="mt-6 grid grid-cols-2 gap-4">
-                        <Button className="py-6" variant={'subscribe'}>
-                            Subscribe
-                        </Button>
+                        <Link href={route('skippy')} className="inline-block w-full">
+                            <Button className="w-full py-6" variant={'subscribe'}>
+                                Subscribe
+                            </Button>
+                        </Link>
                         <Button className="rounded-full py-6">View Sample</Button>
                     </div>
                     <p className="mt-6 text-center font-bold">Rs. 1000 / Year</p>

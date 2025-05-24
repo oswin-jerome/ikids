@@ -22,7 +22,23 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
             <div className="bg-background sticky top-0 z-50 shadow">
                 <nav className="py-1- container flex items-center justify-between">
                     <img src="/assets/images/logo.webp" className="max-w-24 lg:max-w-32" />
-
+                    <ul className="container hidden items-center gap-12 p-4 lg:flex">
+                        <li>
+                            <Link href="/">Home</Link>
+                        </li>
+                        <li>
+                            <Link href={route('shop')}>Shop</Link>
+                        </li>
+                        <li>
+                            <Link href="#">Schools</Link>
+                        </li>
+                        <li>
+                            <Link href="#">FAQs</Link>
+                        </li>
+                        <li>
+                            <Link href="#">Blogs</Link>
+                        </li>
+                    </ul>
                     <div className="flex items-center gap-4">
                         <Button className="hidden lg:inline" variant={'subscribe'}>
                             Subscribe
@@ -90,23 +106,6 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                         </DropdownMenu>
                     </div>
                 </nav>
-                <ul className="container hidden items-center gap-12 p-4 lg:flex">
-                    <li>
-                        <Link href="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link href={route('shop')}>Shop</Link>
-                    </li>
-                    <li>
-                        <Link href="#">Schools</Link>
-                    </li>
-                    <li>
-                        <Link href="#">FAQs</Link>
-                    </li>
-                    <li>
-                        <Link href="#">Blogs</Link>
-                    </li>
-                </ul>
             </div>
             {children}
             <Footer2 />
