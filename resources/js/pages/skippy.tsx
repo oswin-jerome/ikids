@@ -16,7 +16,7 @@ export default function Welcome() {
             <img src="/assets/images/skippy_banner.png" className="min-h-[300px] object-cover" />
             <h3 className="bg-primary p-4 text-center text-xl font-bold text-white md:text-2xl">Skippy - the Kids Activity Magazine</h3>
 
-            <div className="container mt-20 grid gap-4 lg:grid-cols-2">
+            <div className="container mt-10 grid gap-4 lg:mt-20 lg:grid-cols-2">
                 <div>
                     <h2 className="mb-4 text-2xl font-bold">What is Skippy?</h2>
                     <p>

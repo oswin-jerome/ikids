@@ -9,6 +9,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Menu } from 'lucide-react';
@@ -23,21 +31,58 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                 <nav className="py-1- container flex items-center justify-between">
                     <img src="/assets/images/logo.webp" className="max-w-24 lg:max-w-32" />
                     <ul className="container hidden items-center gap-12 p-4 lg:flex">
-                        <li>
-                            <Link href="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link href={route('shop')}>Shop</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Schools</Link>
-                        </li>
-                        <li>
-                            <Link href="#">FAQs</Link>
-                        </li>
-                        <li>
-                            <Link href="#">Blogs</Link>
-                        </li>
+                        <NavigationMenu>
+                            <NavigationMenuList className="space-x-4">
+                                <NavigationMenuItem>
+                                    <Link href={route('home')}>
+                                        <NavigationMenuLink>Home</NavigationMenuLink>
+                                    </Link>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <Link href={route('shop')}>
+                                        <NavigationMenuLink>Shop</NavigationMenuLink>
+                                    </Link>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <Link href="#">
+                                        <NavigationMenuLink>Schools</NavigationMenuLink>
+                                    </Link>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <NavigationMenuTrigger className="font-normal">Magazines</NavigationMenuTrigger>
+                                    <NavigationMenuContent>
+                                        <ul className="w-[300px]">
+                                            <li>
+                                                <Link href={route('skippy')}>
+                                                    <NavigationMenuLink>
+                                                        <p className="font-bold">Skippy</p>
+                                                        <p className="text-slate-500">Skippy - the Kids Activity Magazine</p>
+                                                    </NavigationMenuLink>
+                                                </Link>
+                                            </li>
+                                            <li>
+                                                <NavigationMenuLink asChild>
+                                                    <Link href={route('scikids')}>
+                                                        <p className="font-bold">Scikids</p>
+                                                        <p className="text-slate-500">SciKids - the Science Magazine for Young Minds</p>
+                                                    </Link>
+                                                </NavigationMenuLink>
+                                            </li>
+                                        </ul>
+                                    </NavigationMenuContent>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <Link href="#">
+                                        <NavigationMenuLink>FAQs</NavigationMenuLink>
+                                    </Link>
+                                </NavigationMenuItem>
+                                <NavigationMenuItem>
+                                    <Link href="#">
+                                        <NavigationMenuLink>Blogs</NavigationMenuLink>
+                                    </Link>
+                                </NavigationMenuItem>
+                            </NavigationMenuList>
+                        </NavigationMenu>
                     </ul>
                     <div className="flex items-center gap-4">
                         <Button className="hidden lg:inline" variant={'subscribe'}>

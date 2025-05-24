@@ -77,8 +77,8 @@ const Testimonial14 = () => {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <CarouselNext />
-                <CarouselPrevious />
+                <CarouselNext className="hidden md:flex" />
+                <CarouselPrevious className="hidden md:flex" />
             </Carousel>
             <div className="container flex justify-center py-6">
                 {testimonials.map((testimonial, index) => (

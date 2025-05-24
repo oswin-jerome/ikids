@@ -7,7 +7,7 @@ const SkippyBlock = () => {
     return (
         <div>
             <h3 className="bg-primary p-4 text-center text-xl font-bold text-white md:text-2xl">Skippy - the Kids Activity Magazine</h3>
-            <section className="container grid gap-10 py-20 md:grid-cols-[2fr_3fr] lg:gap-20">
+            <section className="container grid gap-10 py-10 md:grid-cols-[2fr_3fr] lg:gap-20 lg:py-20">
                 <div>
                     <img alt="Book 1" src="/assets/books/book1.png" className="w-full rounded-lg" />
                     <div className="mt-6 grid grid-cols-2 gap-4">
@@ -56,8 +56,8 @@ const SkippyBlock = () => {
                                         <img src="/assets/books/book1.png" className="object-cover" />
                                     </CarouselItem>
                                 </CarouselContent>
-                                <CarouselPrevious />
-                                <CarouselNext />
+                                <CarouselPrevious className="hidden md:flex" />
+                                <CarouselNext className="hidden md:flex" />
                             </Carousel>
                         </CardContent>
                     </Card>

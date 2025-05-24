@@ -7,7 +7,7 @@ const ScikidBlock = () => {
     return (
         <div>
             <h3 className="bg-primary p-4 text-center text-xl font-bold text-white md:text-2xl">SciKids - the Science Magazine for Young Minds</h3>
-            <section className="container grid gap-10 py-20 md:grid-cols-[3fr_2fr] lg:gap-20">
+            <section className="container grid gap-10 py-10 md:grid-cols-[3fr_2fr] lg:gap-20 lg:py-20">
                 <div>
                     <h4 className="text-xl font-bold lg:text-2xl">March 2024 Issue Highlights</h4>
                     <ul className="mt-4 ml-3 list-disc space-y-2">
@@ -44,8 +44,8 @@ const ScikidBlock = () => {
                                         <img src="/assets/books/book2.png" className="object-cover" />
                                     </CarouselItem>
                                 </CarouselContent>
-                                <CarouselPrevious />
-                                <CarouselNext />
+                                <CarouselPrevious className="hidden md:flex" />
+                                <CarouselNext className="hidden md:flex" />
                             </Carousel>
                         </CardContent>
                     </Card>
