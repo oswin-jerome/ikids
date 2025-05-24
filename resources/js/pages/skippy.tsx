@@ -11,7 +11,7 @@ export default function Welcome() {
             <SeoHead
                 description="SKIPPY' is a monthly magazine designed especially for children aged 3-8 years! Each issue is filled with delightful stories, comics, engaging activities, and colorful illustrations to captivate young minds"
                 title="Skippy - the Kids Activity Magazine"
-                image="/assets/images/skippy_banner.png"
+                image="/assets/images/skippy_books_compressed.jpg"
             />
             <img src="/assets/images/skippy_banner.png" className="min-h-[300px] object-cover" />
             <h3 className="bg-primary p-4 text-center text-xl font-bold text-white md:text-2xl">Skippy - the Kids Activity Magazine</h3>
