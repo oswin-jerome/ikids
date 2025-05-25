@@ -1,9 +1,14 @@
 <?php
 
 use App\Http\Controllers\OrderController;
+use App\Http\Resources\CartItemResource;
+use App\Http\Resources\CartResource;
 use App\Http\Resources\ProductResource;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -50,6 +55,61 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 	Route::get('profile', function () {
 		return Inertia::render('user/profile');
 	})->name('profile');
+
+	Route::get('cart', function () {
+		$cart = Cart::firstOrCreate([
+			'user_id' => Auth::id()
+		]);
+
+		$cartItems = CartItemResource::collection($cart->items()->with("product", "product.media")->get());
+		return Inertia::render('user/Cart', [
+			"cartItems" => $cartItems,
+			"cart" => new CartResource($cart)
+		]);
+	})->name('cart');
+
+	Route::get('checkout', function () {
+		$cart = Cart::firstOrCreate([
+			'user_id' => Auth::id()
+		]);
+
+		$cartItems = CartItemResource::collection($cart->items()->with("product", "product.media")->get());
+		return Inertia::render('user/Checkout', [
+			"cartItems" => $cartItems,
+			"cart" => new CartResource($cart)
+		]);
+	})->name('cart');
+
+	Route::post('cart/{product}', function (Product $product, Request $request) {
+		$cart = Cart::firstOrCreate([
+			'user_id' => Auth::id()
+		]);
+
+
+		$quantity = request("quantity", 1);
+		if ($quantity <= 0) {
+			$existing = $cart->items()->where("product_id", $product->id)->first();
+			if ($existing) {
+				$existing->delete();
+			}
+			return back();
+		}
+
+		$existing = $cart->items()->where("product_id", $product->id)->first();
+		if ($existing) {
+			$existing->quantity = $quantity;
+			$existing->save();
+		} else {
+			$cartItem = CartItem::create([
+				"product_id" => $product->id,
+				'cart_id' => $cart->id,
+				'quantity' => $quantity,
+			]);
+		}
+
+		return back();
+	})->name('cart');
+
 
 	Route::get('subscriptions', function () {
 		return Inertia::render('user/Subscriptions');

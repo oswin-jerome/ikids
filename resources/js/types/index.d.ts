@@ -68,3 +68,23 @@ export interface Order {
     created_at: Date;
     updated_at: Date;
 }
+
+export interface CartItem {
+    id: number;
+    cart_id: number;
+    product_id: number;
+    quantity: number;
+    created_at: Date;
+    updated_at: Date;
+    product: Product;
+}
+export interface Cart {
+    id: number;
+    user_id: number;
+    created_at: Date;
+    updated_at: Date;
+    sub_total: number;
+    tax: number;
+    shipping: number;
+    total: number;
+}

@@ -27,9 +27,8 @@ const ProductPage = ({ product }: { product: Product }) => {
                             onSuccess={() => {
                                 toast.success('Order Placed!!!');
                             }}
-                            href={route('user.orders.store')}
+                            href={route('user.cart', product.id)}
                             method="post"
-                            data={{ products: [product.id], quantities: [2] }}
                         >
                             <Button className="mt-4 w-full">Buy Now</Button>
                         </Link>
