@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\OrderController;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -31,20 +33,25 @@ Route::get('/shop/{product:slug}', function (Product $product) {
 	]);
 })->name('shop.product');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
+	Route::resource("orders", OrderController::class);
+
 	Route::get('orders', function () {
-		return Inertia::render('user/Orders');
-	})->name('user.orders');
+		$orders = Auth::user()->orders;
+		return Inertia::render('user/Orders', [
+			"orders" => $orders
+		]);
+	})->name('orders');
 
 	Route::get('change-password', function () {
 		return Inertia::render('user/password');
-	})->name('user.password');
+	})->name('password');
 
 	Route::get('profile', function () {
 		return Inertia::render('user/profile');
-	})->name('user.profile');
+	})->name('profile');
 
 	Route::get('subscriptions', function () {
 		return Inertia::render('user/Subscriptions');
-	})->name('user.subscriptions');
+	})->name('subscriptions');
 });

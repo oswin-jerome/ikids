@@ -1,4 +1,4 @@
-import { AudioWaveform, BaggageClaim, Command, Frame, GalleryVerticalEnd, Map, PieChart } from 'lucide-react';
+import { AudioWaveform, BaggageClaim, Command, Frame, GalleryVerticalEnd, Map, PieChart, ShoppingCartIcon } from 'lucide-react';
 import * as React from 'react';
 
 import { NavMain } from '@/components/nav-main';
@@ -55,6 +55,54 @@ const data = {
                 {
                     title: 'Add Stock',
                     url: route('admin.stocks.create'),
+                },
+            ],
+        },
+        {
+            title: 'Orders',
+            url: '#',
+            icon: ShoppingCartIcon,
+            isActive: false,
+            items: [
+                {
+                    title: 'All Orders',
+                    url: route('admin.orders.index'),
+                },
+                {
+                    title: 'Pending Orders',
+                    url: route('admin.orders.index', {
+                        _query: {
+                            status: 'pending',
+                        },
+                    }),
+                },
+                {
+                    title: 'Processing Orders',
+                    url: route('admin.orders.index', {
+                        _query: {
+                            status: 'processing',
+                        },
+                    }),
+                },
+                {
+                    title: 'Canceled Orders',
+                    url: route('admin.orders.index', {
+                        _query: {
+                            status: 'cancelled',
+                        },
+                    }),
+                },
+                {
+                    title: 'Completed Orders',
+                    url: route('admin.orders.index', {
+                        _query: {
+                            status: 'completed',
+                        },
+                    }),
+                },
+                {
+                    title: 'Create Order',
+                    url: route('admin.orders.create'),
                 },
             ],
         },

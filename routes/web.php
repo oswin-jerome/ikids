@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminOrdersController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminStockController;
 use App\Http\Middleware\EnsureUserIsAdmin;
@@ -18,6 +19,7 @@ Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])->group(functio
 Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])->prefix("admin")->name("admin.")->group(function () {
     Route::resource("products", AdminProductController::class);
     Route::resource("stocks", AdminStockController::class);
+    Route::resource("orders", AdminOrdersController::class);
 });
 
 

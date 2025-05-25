@@ -57,3 +57,14 @@ export interface Product {
 
     cover: string;
 }
+
+export interface Order {
+    id: number;
+    order_id: string;
+    user_id: number;
+    type: string;
+    status: string;
+    total_amount: string;
+    created_at: Date;
+    updated_at: Date;
+}
