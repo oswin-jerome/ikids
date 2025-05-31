@@ -13,7 +13,7 @@ export default function Component({ cartItems, cart }: { cartItems: CartItem[]; 
     // const total = subtotal + shipping + tax;
 
     const updateQuantity = (product_id: number, quantity: number) => {
-        router.post(route('user.cart', product_id), {
+        router.post(route('user.cart.add', product_id), {
             quantity: quantity,
         });
     };
@@ -144,9 +144,11 @@ export default function Component({ cartItems, cart }: { cartItems: CartItem[]; 
                             </CardContent>
 
                             <CardFooter className="flex flex-col gap-2">
-                                <Button className="w-full" size="lg">
-                                    Proceed to Checkout
-                                </Button>
+                                <Link href={route('user.checkout')} className="w-full">
+                                    <Button className="w-full" size="lg">
+                                        Proceed to Checkout
+                                    </Button>
+                                </Link>
                                 <Button variant="outline" className="w-full">
                                     Save for Later
                                 </Button>

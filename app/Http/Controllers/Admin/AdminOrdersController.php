@@ -19,6 +19,7 @@ class AdminOrdersController extends Controller
         if ($status != "all") {
             $orders = $orders->where("status", $status);
         }
+        $orders = $orders->orderBy("created_at", "desc");
         $orders = $orders->get();
 
         return Inertia::render("admin/orders/Index", [
@@ -48,7 +49,15 @@ class AdminOrdersController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        // return $order->load([
+        //     'orderItems' => function ($query) {
+        //         $query->with('product');
+        //     },
+        //     'customer'
+        // ]);
+        return Inertia::render("admin/orders/View", [
+            "order" => $order->load("orderItems", "customer"),
+        ]);
     }
 
     /**

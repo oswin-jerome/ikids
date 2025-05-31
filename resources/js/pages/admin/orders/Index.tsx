@@ -1,4 +1,5 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -6,7 +7,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { BreadcrumbItem, Order } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
+import { View } from 'lucide-react';
 import moment from 'moment';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -64,6 +66,7 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
                         <TableHead>Amount</TableHead>
                         <TableHead>Type</TableHead>
                         <TableHead>Status</TableHead>
+                        <TableHead>Payment Status</TableHead>
                         <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
@@ -89,7 +92,25 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
                                         {order.status.charAt(0).toUpperCase() + order.status.substring(1)}
                                     </Badge>
                                 </TableCell>
-                                <TableCell></TableCell>
+                                <TableCell>
+                                    <Badge
+                                        variant={'outline'}
+                                        className={cn('min-w-[100px] px-2', {
+                                            'border-amber-500 text-amber-500': order.payment_status == 'pending',
+                                            'border-red-500 text-red-500': order.payment_status == 'failed',
+                                            'border-green-500 text-green-500': order.payment_status == 'completed',
+                                        })}
+                                    >
+                                        {order.payment_status.charAt(0).toUpperCase() + order.payment_status.substring(1)}
+                                    </Badge>
+                                </TableCell>
+                                <TableCell>
+                                    <Link href={route('admin.orders.show', order.id)}>
+                                        <Button>
+                                            <View />
+                                        </Button>
+                                    </Link>
+                                </TableCell>
                             </TableRow>
                         );
                     })}

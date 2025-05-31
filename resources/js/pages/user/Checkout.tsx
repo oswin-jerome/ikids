@@ -1,5 +1,4 @@
-import type React from 'react';
-
+import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,28 +7,69 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import WebLayout from '@/layouts/web-layout';
 import { Cart, CartItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, CreditCard, Lock } from 'lucide-react';
 import { useState } from 'react';
+import { RazorpayOrderOptions, useRazorpay } from 'react-razorpay';
 
-export default function Component({ cartItems, cart }: { cartItems: CartItem[]; cart: Cart }) {
+export default function Component({
+    cartItems,
+    cart,
+    order_id,
+    db_order_id,
+}: {
+    cartItems: CartItem[];
+    cart: Cart;
+    order_id: string;
+    db_order_id: string;
+}) {
     const [isProcessing, setIsProcessing] = useState(false);
-    const [formData, setFormData] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
+    const { error, isLoading, Razorpay } = useRazorpay();
+
+    const { post, processing, errors, data, setData } = useForm({
+        first_name: '',
+        last_name: '',
         address: '',
         city: '',
-        postalCode: '',
-        phone: '',
+        postal_code: '',
+        phone_number: '',
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+    const handleAddressSubmit = () => {
+        post(route('user.checkout'), {
+            onSuccess: (res) => {
+                console.log(res);
+            },
+        });
     };
 
     const handleRazorpayPayment = async () => {
-        setIsProcessing(true);
+        const options: RazorpayOrderOptions = {
+            key: 'rzp_test_Wok0nv9mU8B1IW',
+            amount: 50000, // Amount in paise
+            currency: 'INR',
+            name: 'Test Company',
+            description: 'Test Transaction',
+            order_id: order_id,
+            callback_url: route('api.payment.callback', db_order_id),
+            handler: async (response) => {
+                console.log(response);
+                await fetch(route('api.payment.callback', db_order_id), {
+                    method: 'post',
+                    body: JSON.stringify(response),
+                });
+                router.get(route('user.orders'));
+            },
+            prefill: {
+                name: 'John Doe',
+                email: 'john.doe@example.com',
+                contact: '9999999999',
+            },
+        };
+
+        const razorpayInstance = new Razorpay(options);
+        await razorpayInstance.open();
+        setIsProcessing(false);
     };
 
     return (
@@ -57,11 +97,25 @@ export default function Component({ cartItems, cart }: { cartItems: CartItem[]; 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <Label htmlFor="firstName">First Name</Label>
-                                        <Input id="firstName" name="firstName" value={formData.firstName} onChange={handleInputChange} required />
+                                        <Input
+                                            id="firstName"
+                                            name="firstName"
+                                            value={data.first_name}
+                                            onChange={(e) => setData('first_name', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.first_name} />
                                     </div>
                                     <div>
                                         <Label htmlFor="lastName">Last Name</Label>
-                                        <Input id="lastName" name="lastName" value={formData.lastName} onChange={handleInputChange} required />
+                                        <Input
+                                            id="lastName"
+                                            name="lastName"
+                                            value={data.last_name}
+                                            onChange={(e) => setData('last_name', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.last_name} />
                                     </div>
                                 </div>
 
@@ -70,21 +124,30 @@ export default function Component({ cartItems, cart }: { cartItems: CartItem[]; 
                                     <Input
                                         id="address"
                                         name="address"
-                                        value={formData.address}
-                                        onChange={handleInputChange}
+                                        value={data.address}
+                                        onChange={(e) => setData('address', e.target.value)}
                                         placeholder="123 Main Street"
                                         required
                                     />
+                                    <InputError message={errors.address} />
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">
                                     <div>
                                         <Label htmlFor="city">City</Label>
-                                        <Input id="city" name="city" value={formData.city} onChange={handleInputChange} required />
+                                        <Input id="city" name="city" value={data.city} onChange={(e) => setData('city', e.target.value)} required />
+                                        <InputError message={errors.city} />
                                     </div>
                                     <div>
                                         <Label htmlFor="postalCode">Postal Code</Label>
-                                        <Input id="postalCode" name="postalCode" value={formData.postalCode} onChange={handleInputChange} required />
+                                        <Input
+                                            id="postalCode"
+                                            name="postalCode"
+                                            value={data.postal_code}
+                                            onChange={(e) => setData('postal_code', e.target.value)}
+                                            required
+                                        />
+                                        <InputError message={errors.postal_code} />
                                     </div>
                                 </div>
 
@@ -94,11 +157,12 @@ export default function Component({ cartItems, cart }: { cartItems: CartItem[]; 
                                         id="phone"
                                         name="phone"
                                         type="tel"
-                                        value={formData.phone}
-                                        onChange={handleInputChange}
+                                        value={data.phone_number}
+                                        onChange={(e) => setData('phone_number', e.target.value)}
                                         placeholder="+1 (555) 123-4567"
                                         required
                                     />
+                                    <InputError message={errors.phone_number} />
                                 </div>
                             </CardContent>
                         </Card>
@@ -156,16 +220,31 @@ export default function Component({ cartItems, cart }: { cartItems: CartItem[]; 
                                         <span className="text-muted-foreground text-sm">Secure payment</span>
                                     </div>
 
-                                    <Button onClick={handleRazorpayPayment} disabled={isProcessing} className="w-full" size="lg">
-                                        {isProcessing ? (
-                                            'Processing...'
-                                        ) : (
-                                            <>
-                                                <CreditCard className="mr-2 h-4 w-4" />
-                                                Pay with Razorpay
-                                            </>
-                                        )}
-                                    </Button>
+                                    {order_id == null && (
+                                        <Button
+                                            className="w-full"
+                                            size="lg"
+                                            disabled={processing}
+                                            onClick={() => {
+                                                handleAddressSubmit();
+                                            }}
+                                        >
+                                            Checkout
+                                        </Button>
+                                    )}
+                                    {order_id && (
+                                        <Button onClick={handleRazorpayPayment} disabled={isProcessing || isLoading} className="w-full" size="lg">
+                                            {isProcessing ? (
+                                                'Processing...'
+                                            ) : (
+                                                <>
+                                                    <CreditCard className="mr-2 h-4 w-4" />
+                                                    Pay with Razorpay
+                                                </>
+                                            )}
+                                        </Button>
+                                    )}
+                                    {error}
 
                                     <div className="text-muted-foreground flex items-center justify-center gap-2 text-xs">
                                         <span>Powered by</span>

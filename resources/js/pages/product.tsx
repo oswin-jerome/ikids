@@ -2,8 +2,7 @@ import SeoHead from '@/components/SeoHead';
 import { Button } from '@/components/ui/button';
 import WebLayout from '@/layouts/web-layout';
 import { Product } from '@/types';
-import { Link } from '@inertiajs/react';
-import { toast } from 'sonner';
+import { router } from '@inertiajs/react';
 
 const ProductPage = ({ product }: { product: Product }) => {
     return (
@@ -23,15 +22,29 @@ const ProductPage = ({ product }: { product: Product }) => {
                             <p>Rs. {product.selling_price}</p>
                             <span className="text-sm italic line-through opacity-50">Rs. {product.actual_price}</span>
                         </div>
-                        <Link
+                        {/* <Link
+                            as="div"
                             onSuccess={() => {
                                 toast.success('Order Placed!!!');
                             }}
-                            href={route('user.cart', product.id)}
+                            href={route('user.cart.add', product.id)}
                             method="post"
+                        > */}
+                        <Button
+                            onClick={() => {
+                                router.post(
+                                    route('user.cart.add', product.id),
+                                    {},
+                                    {
+                                        onSuccess: () => {},
+                                    },
+                                );
+                            }}
+                            className="mt-4 w-full"
                         >
-                            <Button className="mt-4 w-full">Buy Now</Button>
-                        </Link>
+                            Add to Cart
+                        </Button>
+                        {/* </Link> */}
                     </div>
                 </div>
             </div>

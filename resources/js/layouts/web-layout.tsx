@@ -12,12 +12,12 @@ import {
 } from '@/components/ui/navigation-menu';
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Menu } from 'lucide-react';
+import { Menu, ShoppingCart } from 'lucide-react';
 import { ReactNode } from 'react';
 import MagazineNav from './MagazineNav';
 
 const WebLayout = ({ children }: { children: ReactNode }) => {
-    const { auth } = usePage<SharedData>().props;
+    const { auth, cartCount } = usePage<SharedData>().props;
 
     return (
         <div>
@@ -89,6 +89,12 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                                 </Button>
                             </Link>
                         )}
+                        <Link href={route('user.cart')}>
+                            <Button variant={'ghost'} size={'icon'} className="relative">
+                                <div className="absolute top-0 right-0 h-4 min-w-4 rounded-full bg-red-700 text-xs text-white">{cartCount}</div>
+                                <ShoppingCart />
+                            </Button>
+                        </Link>
                         {auth.user != null && (
                             <DropdownMenu>
                                 <DropdownMenuTrigger>

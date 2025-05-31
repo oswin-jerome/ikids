@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Cart;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -38,7 +40,13 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
-
+        $cartCount = 0;
+        if (Auth::check()) {
+            $cart = Cart::firstOrCreate([
+                'user_id' => Auth::id()
+            ]);
+            $cartCount = count($cart->items);
+        }
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -46,11 +54,12 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
-            'ziggy' => fn (): array => [
+            'ziggy' => fn(): array => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            "cartCount" => $cartCount
         ];
     }
 }

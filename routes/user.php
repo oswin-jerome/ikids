@@ -1,16 +1,20 @@
 <?php
 
 use App\Http\Controllers\OrderController;
+use App\Http\Requests\User\StoreCheckoutRequest;
 use App\Http\Resources\CartItemResource;
 use App\Http\Resources\CartResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use Razorpay\Api\Api;
 
 Route::get('/', function () {
 	return Inertia::render('landing');
@@ -42,7 +46,7 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 	Route::resource("orders", OrderController::class);
 
 	Route::get('orders', function () {
-		$orders = Auth::user()->orders;
+		$orders = Auth::user()->orders()->orderBy("created_at", "desc")->get();
 		return Inertia::render('user/Orders', [
 			"orders" => $orders
 		]);
@@ -78,7 +82,21 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 			"cartItems" => $cartItems,
 			"cart" => new CartResource($cart)
 		]);
-	})->name('cart');
+	})->name('checkout');
+	Route::get('checkout/{orderId}/{db_order_id}', function ($orderId, $db_order_id) {
+		// FIXME: validate order ids
+		$cart = Cart::firstOrCreate([
+			'user_id' => Auth::id()
+		]);
+
+		$cartItems = CartItemResource::collection($cart->items()->with("product", "product.media")->get());
+		return Inertia::render('user/Checkout', [
+			"cartItems" => $cartItems,
+			"cart" => new CartResource($cart),
+			"order_id" => $orderId,
+			"db_order_id" => $db_order_id
+		]);
+	})->name('checkout.payment');
 
 	Route::post('cart/{product}', function (Product $product, Request $request) {
 		$cart = Cart::firstOrCreate([
@@ -92,7 +110,7 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 			if ($existing) {
 				$existing->delete();
 			}
-			return back();
+			return redirect()->route("user.cart");
 		}
 
 		$existing = $cart->items()->where("product_id", $product->id)->first();
@@ -107,11 +125,69 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 			]);
 		}
 
-		return back();
-	})->name('cart');
+		return redirect()->route("user.cart");
+	})->name('cart.add');
 
 
 	Route::get('subscriptions', function () {
 		return Inertia::render('user/Subscriptions');
 	})->name('subscriptions');
+
+	Route::post("checkout", function (StoreCheckoutRequest $request) {
+		$request->validated();
+		$user = Auth::user();
+		$order = new Order();
+		$order->user_id = $user->id;
+		$order->type = "direct";
+		$order->total_amount = 0; // Initialize to 0
+
+		// ADDRESS
+		$order->first_name = $request->first_name;
+		$order->last_name = $request->last_name;
+		$order->address = $request->address;
+		$order->city = $request->city;
+		$order->postal_code = $request->postal_code;
+		$order->phone_number = $request->phone_number;
+
+		$order->save();
+		$totalAmount = 0;
+		$cart = Cart::firstOrCreate([
+			'user_id' => Auth::id()
+		]);
+		foreach ($cart->items as  $cartItem) {
+			$product = $cartItem->product;
+			$quantity = $cartItem->quantity;
+
+			if ($quantity < 1) {
+				continue; // Skip invalid quantities
+			}
+
+			$orderItem = $order->orderItems()->create([
+				"product_id" => $product->id,
+				"quantity" => $quantity,
+				"price" => $product->selling_price
+			]);
+
+			$totalAmount += $product->selling_price * $quantity;
+		}
+
+		$order->total_amount = $totalAmount;
+		$order->save();
+
+		$api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
+		$data = $api->order->create([
+			'receipt'         => $order->order_id,
+			'amount'          => 100 * 100, // amount in paise
+			'currency'        => 'INR',
+		]);
+
+		$cart = Cart::firstOrCreate([
+			'user_id' => Auth::id()
+		]);
+
+		return redirect()->route("user.checkout.payment", [
+			"orderId" => $data->id,
+			"db_order_id" => $order->order_id
+		]);
+	})->name("checkout");
 });

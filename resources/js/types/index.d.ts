@@ -28,6 +28,7 @@ export interface SharedData {
     auth: Auth;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
+    cartCount: number;
     [key: string]: unknown;
 }
 
@@ -63,10 +64,21 @@ export interface Order {
     order_id: string;
     user_id: number;
     type: string;
-    status: string;
+    status: 'pending' | 'processing' | 'shipped' | 'completed' | 'cancelled';
+    payment_status: 'pending' | 'completed' | 'failed';
     total_amount: string;
     created_at: Date;
     updated_at: Date;
+
+    first_name: string;
+    last_name: string;
+    address: string;
+    postal_code: string;
+    city: string;
+    phone_number: string;
+
+    customer?: User;
+    orderItems: Product[];
 }
 
 export interface CartItem {

@@ -9,7 +9,7 @@ const OrdersPage = ({ orders }: { orders: Order[] }) => {
     return (
         <WebLayout>
             <SeoHead title="Orders" description="List you orders you have made" />
-            <div className="container mt-10 min-h-[60dvh]">
+            <div className="container mt-10 min-h-[60dvh] pb-10">
                 <h2 className="text-2xl font-bold">Orders</h2>
                 <Table className="mt-4">
                     <TableHeader>
@@ -19,6 +19,7 @@ const OrdersPage = ({ orders }: { orders: Order[] }) => {
                             <TableHead>Amount</TableHead>
                             <TableHead>Type</TableHead>
                             <TableHead>Status</TableHead>
+                            <TableHead>Payment</TableHead>
                             <TableHead>Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -42,6 +43,18 @@ const OrdersPage = ({ orders }: { orders: Order[] }) => {
                                             })}
                                         >
                                             {order.status.charAt(0).toUpperCase() + order.status.substring(1)}
+                                        </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Badge
+                                            variant={'outline'}
+                                            className={cn('min-w-[100px] px-2', {
+                                                'border-amber-500 text-amber-500': order.payment_status == 'pending',
+                                                'border-red-500 text-red-500': order.payment_status == 'failed',
+                                                'border-green-500 text-green-500': order.payment_status == 'completed',
+                                            })}
+                                        >
+                                            {order.payment_status.charAt(0).toUpperCase() + order.payment_status.substring(1)}
                                         </Badge>
                                     </TableCell>
                                     <TableCell></TableCell>

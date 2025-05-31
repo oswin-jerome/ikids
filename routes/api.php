@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Requests\RazorpayCallbackRequest;
+use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -27,3 +29,18 @@ Route::get('/products', function (Request $request) {
 
     return Product::where("name", "LIKE", "%" . $name . "%")->limit(10)->get();
 })->name("api.products");
+
+Route::post("payments/callback/{order:order_id}", function (Order $order, RazorpayCallbackRequest $request) {
+
+    if ($request->razorpay_signature != null)
+        $order->payment_status = "completed";
+    else {
+        $order->payment_status = "failed";
+        $order->status = "cancelled";
+    }
+
+
+    $order->save();
+
+    return response()->json();
+})->name("api.payment.callback");

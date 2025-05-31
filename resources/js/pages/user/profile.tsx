@@ -36,7 +36,7 @@ export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: 
         <WebLayout>
             <Head title="Profile settings" />
 
-            <div className="container mt-10 grid grid-cols-2 gap-4">
+            <div className="container mt-10 grid grid-cols-2 gap-4 pb-10">
                 <div className="max-w-xl space-y-6">
                     <HeadingSmall title="Profile information" description="Update your name and email address" />
 

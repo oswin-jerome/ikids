@@ -43,7 +43,7 @@ export default function Password() {
         <WebLayout>
             <Head title="Change Password" />
 
-            <div className="container mt-10">
+            <div className="container mt-10 pb-10">
                 <div className="max-w-xl space-y-6">
                     <HeadingSmall title="Update password" description="Ensure your account is using a long, random password to stay secure" />
 
