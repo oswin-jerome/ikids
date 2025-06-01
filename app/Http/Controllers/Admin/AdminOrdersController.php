@@ -59,9 +59,12 @@ class AdminOrdersController extends Controller
     public function show(Order $order)
     {
         $orderItems = $order->orderItems()->with("product")->get();
+        $orderEvents = $order->orderEvents;
+        // return $orderEvents;
         return Inertia::render("admin/orders/View", [
             "order" => $order->load("customer"),
-            "orderItems" => OrderItemResource::collection($orderItems)
+            "orderItems" => OrderItemResource::collection($orderItems),
+            "orderEvents" => $orderEvents
         ]);
     }
 
@@ -79,6 +82,26 @@ class AdminOrdersController extends Controller
     public function update(Request $request, Order $order)
     {
         //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function updateStatus(Request $request, Order $order)
+    {
+        $data = $request->validate([
+            "status" => "required|string",
+            "description" => "required|string",
+        ]);
+
+        $status = $order->status;
+
+        $order->status = $data['status'];
+        $order->save();
+
+        $order->addEvent("order", "Order status changed from " . $status . " to " . $data['status'], $data['description'], "admin");
+
+        return back();
     }
 
     /**

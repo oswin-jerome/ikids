@@ -8,6 +8,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
+use App\Models\OrderEvent;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -173,6 +174,16 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 
 		$order->total_amount = $totalAmount;
 		$order->save();
+
+		// Create Order Event
+		$oe = new OrderEvent();
+		$oe->order_id = $order->id;
+		$oe->event_type = "order";
+		$oe->title = "Checkout";
+		$oe->description = "Order checked out for payments";
+		$oe->actor = "customer";
+
+		$oe->save();
 
 		$api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
 		$data = $api->order->create([

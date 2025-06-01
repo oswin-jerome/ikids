@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])->prefix("admin
     Route::resource("products", AdminProductController::class);
     Route::resource("stocks", AdminStockController::class);
     Route::resource("orders", AdminOrdersController::class);
+    Route::post("orders/{order}/status", [AdminOrdersController::class, 'updateStatus'])->name("orders.update.status");
 });
 
 

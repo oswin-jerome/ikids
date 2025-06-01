@@ -63,6 +63,8 @@ Route::post("razorpay/callback", function (Request $request) {
         $order->payment_status = "completed";
         $order->razorpay_payment_id = $payment_id;
         $order->save();
+
+        $order->addEvent("payment", "Payment Success", "Received payment with pay id: " . $payment_id, "system");
     } else if ($event == "payment.failed") {
         $order_id = $request->get("payload")['payment']['entity']['order_id'];
         $payment_id = $request->get("payload")['payment']['entity']['id'];
@@ -71,6 +73,8 @@ Route::post("razorpay/callback", function (Request $request) {
         $order->status = "cancelled";
         $order->razorpay_payment_id = $payment_id;
         $order->save();
+        $order->addEvent("payment", "Payment Failed", "Failed to process payment pay id: " . $payment_id, "system");
+        $order->addEvent("order", "Order Cancel", "Cancelling order due to payment failure", "system");
     }
 
     return response()->json();

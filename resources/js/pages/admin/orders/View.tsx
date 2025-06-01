@@ -3,15 +3,13 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
-import { CartItem, Order } from '@/types';
-import { CheckCircle, Clock, CreditCard, Edit, Mail, MapPin, Package, Phone, RefreshCw, Save, Truck, User, X } from 'lucide-react';
+import { CartItem, Order, OrderEvent } from '@/types';
+import { CheckCircle, Clock, CreditCard, Edit, Mail, MapPin, Package, Phone, RefreshCw, Truck, User, X } from 'lucide-react';
+import moment from 'moment';
 import { useState } from 'react';
+import UpdateOrder from './UpdateOrder';
 
 interface StatusHistory {
     status: string;
@@ -20,7 +18,7 @@ interface StatusHistory {
     updatedBy: string;
 }
 
-type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+// type OrderStatus = 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
 
 const statusConfig = {
     pending: { label: 'Pending', color: 'bg-yellow-100 text-yellow-800', icon: <Clock className="h-3 w-3" /> },
@@ -30,12 +28,8 @@ const statusConfig = {
     cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-800', icon: <X className="h-3 w-3" /> },
 };
 
-export default function Component({ order, orderItems }: { order: Order; orderItems: CartItem[] }) {
-    const [currentStatus, setCurrentStatus] = useState<OrderStatus>('processing');
+export default function Component({ order, orderItems, orderEvents }: { order: Order; orderItems: CartItem[]; orderEvents: OrderEvent[] }) {
     const [isEditingStatus, setIsEditingStatus] = useState(false);
-    const [newStatus, setNewStatus] = useState<OrderStatus>(currentStatus);
-    const [statusNote, setStatusNote] = useState('');
-    const [trackingNumber, setTrackingNumber] = useState('1Z999AA1234567890');
 
     const orderData = {
         id: 'ORD-2024-001234',
@@ -87,20 +81,6 @@ export default function Component({ order, orderItems }: { order: Order; orderIt
         },
     ];
 
-    const handleStatusUpdate = () => {
-        setCurrentStatus(newStatus);
-        setIsEditingStatus(false);
-        // Here you would typically make an API call to update the status
-        console.log('Status updated to:', newStatus, 'Note:', statusNote);
-        setStatusNote('');
-    };
-
-    const cancelStatusEdit = () => {
-        setNewStatus(currentStatus);
-        setIsEditingStatus(false);
-        setStatusNote('');
-    };
-
     return (
         <AppLayout>
             <div className="container mx-auto max-w-6xl px-4 py-6">
@@ -127,63 +107,13 @@ export default function Component({ order, orderItems }: { order: Order; orderIt
                     <div className="space-y-6 lg:col-span-2">
                         {/* Status Update */}
                         {isEditingStatus && (
-                            <Card className="border-blue-200 bg-blue-50">
-                                <CardHeader>
-                                    <CardTitle className="text-lg">Update Order Status</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <Label htmlFor="status">New Status</Label>
-                                            <Select value={newStatus} onValueChange={(value: OrderStatus) => setNewStatus(value)}>
-                                                <SelectTrigger>
-                                                    <SelectValue />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {Object.entries(statusConfig).map(([key, config]) => (
-                                                        <SelectItem key={key} value={key}>
-                                                            <div className="flex items-center gap-2">
-                                                                {config.icon}
-                                                                {config.label}
-                                                            </div>
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        {newStatus === 'shipped' && (
-                                            <div>
-                                                <Label htmlFor="tracking">Tracking Number</Label>
-                                                <Input
-                                                    id="tracking"
-                                                    value={trackingNumber}
-                                                    onChange={(e) => setTrackingNumber(e.target.value)}
-                                                    placeholder="Enter tracking number"
-                                                />
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="note">Status Note (Optional)</Label>
-                                        <Textarea
-                                            id="note"
-                                            value={statusNote}
-                                            onChange={(e) => setStatusNote(e.target.value)}
-                                            placeholder="Add a note about this status change..."
-                                            rows={3}
-                                        />
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Button onClick={handleStatusUpdate}>
-                                            <Save className="mr-2 h-4 w-4" />
-                                            Update Status
-                                        </Button>
-                                        <Button variant="outline" onClick={cancelStatusEdit}>
-                                            Cancel
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <UpdateOrder
+                                order={order}
+                                order_id={order.id}
+                                onClose={() => {
+                                    setIsEditingStatus(false);
+                                }}
+                            />
                         )}
 
                         {/* Order Items */}
@@ -241,7 +171,7 @@ export default function Component({ order, orderItems }: { order: Order; orderIt
                         </Card>
 
                         {/* Status History */}
-                        <Card className="opacity-30">
+                        <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Clock className="h-5 w-5" />
@@ -250,7 +180,7 @@ export default function Component({ order, orderItems }: { order: Order; orderIt
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
-                                    {statusHistory.map((entry, index) => (
+                                    {orderEvents.map((entry, index) => (
                                         <div key={index} className="flex gap-4">
                                             <div className="flex flex-col items-center">
                                                 <div
@@ -262,11 +192,11 @@ export default function Component({ order, orderItems }: { order: Order; orderIt
                                             </div>
                                             <div className="flex-1 pb-4">
                                                 <div className="mb-1 flex items-start justify-between">
-                                                    <p className="font-medium">{statusConfig[order.status].label}</p>
-                                                    <p className="text-muted-foreground text-sm">{entry.timestamp}</p>
+                                                    <p className="font-medium">{entry.title}</p>
+                                                    <p className="text-muted-foreground text-sm">{moment(entry.created_at).format('D M Y')}</p>
                                                 </div>
-                                                <p className="text-muted-foreground mb-1 text-sm">Updated by: {entry.updatedBy}</p>
-                                                {entry.note && <p className="text-sm">{entry.note}</p>}
+                                                <p className="text-muted-foreground mb-1 text-sm">Updated by: {entry.actor}</p>
+                                                {entry.description && <p className="text-sm">{entry.description}</p>}
                                             </div>
                                         </div>
                                     ))}

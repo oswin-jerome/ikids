@@ -106,3 +106,14 @@ export interface Cart {
     shipping: number;
     total: number;
 }
+
+export interface OrderEvent {
+    id: number;
+    order_id: number;
+    event_type: string;
+    title: string;
+    description: string;
+    actor: string;
+    created_at: Date;
+    updated_at: Date;
+}
