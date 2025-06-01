@@ -1,5 +1,6 @@
 'use client';
 
+import SeoHead from '@/components/SeoHead';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -83,6 +84,8 @@ export default function Component({ order, orderItems, orderEvents }: { order: O
 
     return (
         <AppLayout>
+            <SeoHead title={'Order details : ' + order.order_id} description="" />
+
             <div className="container mx-auto max-w-6xl px-4 py-6">
                 {/* Header */}
                 <div className="mb-6 flex items-start justify-between">
