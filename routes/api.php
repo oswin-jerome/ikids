@@ -4,6 +4,7 @@ use App\Http\Requests\RazorpayCallbackRequest;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/products', function (Request $request) {
@@ -32,6 +33,7 @@ Route::get('/products', function (Request $request) {
 
 Route::post("payments/callback/{order:order_id}", function (Order $order, RazorpayCallbackRequest $request) {
 
+    Log::info($request);
     if ($request->razorpay_signature != null)
         $order->payment_status = "completed";
     else {
