@@ -5,6 +5,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/products', function (Request $request) {
@@ -47,3 +48,10 @@ Route::post("payments/callback/{order:order_id}", function (Order $order, Razorp
 
     return response()->json();
 })->name("api.payment.callback");
+
+Route::post("razorpay/callback", function (Request $request) {
+
+    Log::info($request);
+
+    return response()->json();
+})->name("api.razorpay.callback");
