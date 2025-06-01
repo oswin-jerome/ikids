@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Separator } from '@/components/ui/separator';
 import WebLayout from '@/layouts/web-layout';
 import { Cart, CartItem } from '@/types';
-import { Link, router } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2 } from 'lucide-react';
 
 export default function Component({ cartItems, cart }: { cartItems: CartItem[]; cart: Cart }) {
@@ -21,6 +21,8 @@ export default function Component({ cartItems, cart }: { cartItems: CartItem[]; 
     if (cartItems.length === 0) {
         return (
             <WebLayout>
+                <Head title="Empty Cart" />
+
                 <div className="container mx-auto px-4 py-8">
                     <div className="mx-auto max-w-md text-center">
                         <ShoppingBag className="text-muted-foreground mx-auto mb-4 h-16 w-16" />
@@ -40,6 +42,8 @@ export default function Component({ cartItems, cart }: { cartItems: CartItem[]; 
 
     return (
         <WebLayout>
+            <Head title="Cart" />
+
             <div className="container mx-auto px-4 py-8">
                 <div className="mb-8">
                     <h1 className="mb-2 text-3xl font-bold">Shopping Cart</h1>

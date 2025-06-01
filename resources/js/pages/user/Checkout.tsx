@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import WebLayout from '@/layouts/web-layout';
 import { Cart, CartItem } from '@/types';
-import { Link, router, useForm } from '@inertiajs/react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
 import { ArrowLeft, CreditCard, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { RazorpayOrderOptions, useRazorpay } from 'react-razorpay';
@@ -75,6 +75,8 @@ export default function Component({
 
     return (
         <WebLayout>
+            <Head title="Checkout" />
+
             <div className="container mx-auto px-4 py-6">
                 <div className="mb-6">
                     <Button variant="ghost" size="sm" asChild className="mb-4">
