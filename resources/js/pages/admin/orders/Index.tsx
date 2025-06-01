@@ -10,7 +10,7 @@ import { BreadcrumbItem, Order } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { View } from 'lucide-react';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,21 +19,26 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+type QueryType = {
+    status: string;
+    payment_status: string;
+};
+
 const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string }) => {
     const [query, setQuery] = useState({
         status: 'all',
         payment_status: 'all',
     });
 
-    useEffect(() => {
+    const handleQuery = (da: QueryType) => {
         router.get(
             route('admin.orders.index', {
-                _query: query,
+                _query: da,
             }),
             {},
             { preserveState: true },
         );
-    }, [query]);
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -49,6 +54,7 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
                             defaultValue={status}
                             onValueChange={(val) => {
                                 setQuery({ ...query, status: val });
+                                handleQuery({ ...query, status: val });
                             }}
                         >
                             <SelectTrigger>
@@ -70,6 +76,7 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
                             defaultValue={status}
                             onValueChange={(val) => {
                                 setQuery({ ...query, payment_status: val });
+                                handleQuery({ ...query, payment_status: val });
                             }}
                         >
                             <SelectTrigger>
