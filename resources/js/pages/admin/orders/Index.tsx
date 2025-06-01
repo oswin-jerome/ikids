@@ -10,6 +10,7 @@ import { BreadcrumbItem, Order } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import { View } from 'lucide-react';
 import moment from 'moment';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -19,6 +20,21 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string }) => {
+    const [query, setQuery] = useState({
+        status: 'all',
+        payment_status: 'all',
+    });
+
+    useEffect(() => {
+        router.get(
+            route('admin.orders.index', {
+                _query: query,
+            }),
+            {},
+            { preserveState: true },
+        );
+    }, [query]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Orders List" />
@@ -32,15 +48,7 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
                         <Select
                             defaultValue={status}
                             onValueChange={(val) => {
-                                router.get(
-                                    route('admin.orders.index', {
-                                        _query: {
-                                            status: val,
-                                        },
-                                    }),
-                                    {},
-                                    { preserveState: true },
-                                );
+                                setQuery({ ...query, status: val });
                             }}
                         >
                             <SelectTrigger>
@@ -53,6 +61,25 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
                                 <SelectItem value="shipped">Shipped</SelectItem>
                                 <SelectItem value="completed">Completed</SelectItem>
                                 <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="grid gap-2">
+                        <Label>Payment Status</Label>
+                        <Select
+                            defaultValue={status}
+                            onValueChange={(val) => {
+                                setQuery({ ...query, payment_status: val });
+                            }}
+                        >
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All</SelectItem>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="failed">Failed</SelectItem>
+                                <SelectItem value="completed">Completed</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

@@ -17,9 +17,13 @@ class AdminOrdersController extends Controller
     public function index()
     {
         $status = request("status", "all");
+        $payment_status = request("payment_status", "all");
         $orders = new Order;
         if ($status != "all") {
             $orders = $orders->where("status", $status);
+        }
+        if ($payment_status != "all") {
+            $orders = $orders->where("payment_status", $payment_status);
         }
         $orders = $orders->orderBy("created_at", "desc");
         $orders = $orders->get();
