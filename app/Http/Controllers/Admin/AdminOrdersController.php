@@ -19,6 +19,9 @@ class AdminOrdersController extends Controller
         $status = request("status", "all");
         $payment_status = request("payment_status", "all");
         $orders = new Order;
+
+        $orders = $orders->where("order_id", "like", "%" . request("order_id", "") . "%");
+
         if ($status != "all") {
             $orders = $orders->where("status", $status);
         }

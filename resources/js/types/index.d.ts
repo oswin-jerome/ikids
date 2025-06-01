@@ -78,6 +78,7 @@ export interface Order {
     phone_number: string;
 
     razorpay_payment_id?: string;
+    razorpay_order_id?: string;
 
     customer?: User;
     orderItems: Product[];

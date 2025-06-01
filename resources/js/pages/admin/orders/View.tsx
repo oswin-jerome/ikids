@@ -332,6 +332,7 @@ export default function Component({ order, orderItems }: { order: Order; orderIt
                                 <div className="text-sm">
                                     <p className="font-medium">{orderData.payment.method}</p>
                                     <p className="text-muted-foreground">Transaction ID: {order.razorpay_payment_id}</p>
+                                    <p className="text-muted-foreground">Order ID: {order.razorpay_order_id}</p>
 
                                     {order.payment_status === 'completed' && (
                                         <p className="font-semibold text-green-600">Rs. {order.total_amount} Paid</p>

@@ -1,6 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -22,12 +23,14 @@ const breadcrumbs: BreadcrumbItem[] = [
 type QueryType = {
     status: string;
     payment_status: string;
+    order_id: string;
 };
 
 const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string }) => {
     const [query, setQuery] = useState({
         status: 'all',
         payment_status: 'all',
+        order_id: '',
     });
 
     const handleQuery = (da: QueryType) => {
@@ -48,6 +51,21 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
                     <CardTitle>Filter</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-4 gap-4">
+                    <div className="flex items-end gap-2">
+                        <div>
+                            <Label>Order ID</Label>
+                            <Input defaultValue={query.order_id} onChange={(e) => setQuery({ ...query, order_id: e.target.value })} />
+                        </div>
+                        <Button
+                            size={'sm'}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleQuery(query);
+                            }}
+                        >
+                            Search
+                        </Button>
+                    </div>
                     <div className="grid gap-2">
                         <Label>Order Status</Label>
                         <Select
