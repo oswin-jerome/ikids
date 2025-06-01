@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OrderItemResource;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -49,14 +51,10 @@ class AdminOrdersController extends Controller
      */
     public function show(Order $order)
     {
-        // return $order->load([
-        //     'orderItems' => function ($query) {
-        //         $query->with('product');
-        //     },
-        //     'customer'
-        // ]);
+        $orderItems = $order->orderItems()->with("product")->get();
         return Inertia::render("admin/orders/View", [
-            "order" => $order->load("orderItems", "customer"),
+            "order" => $order->load("customer"),
+            "orderItems" => OrderItemResource::collection($orderItems)
         ]);
     }
 

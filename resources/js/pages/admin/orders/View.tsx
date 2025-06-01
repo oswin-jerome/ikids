@@ -9,18 +9,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Separator } from '@/components/ui/separator';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
-import { Order } from '@/types';
+import { CartItem, Order } from '@/types';
 import { CheckCircle, Clock, CreditCard, Edit, Mail, MapPin, Package, Phone, RefreshCw, Save, Truck, User, X } from 'lucide-react';
 import { useState } from 'react';
-
-interface OrderItem {
-    id: string;
-    name: string;
-    sku: string;
-    price: number;
-    quantity: number;
-    image: string;
-}
 
 interface StatusHistory {
     status: string;
@@ -39,7 +30,7 @@ const statusConfig = {
     cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-800', icon: <X className="h-3 w-3" /> },
 };
 
-export default function Component({ order }: { order: Order }) {
+export default function Component({ order, orderItems }: { order: Order; orderItems: CartItem[] }) {
     const [currentStatus, setCurrentStatus] = useState<OrderStatus>('processing');
     const [isEditingStatus, setIsEditingStatus] = useState(false);
     const [newStatus, setNewStatus] = useState<OrderStatus>(currentStatus);
@@ -75,25 +66,6 @@ export default function Component({ order }: { order: Order }) {
         },
     };
 
-    const orderItems: OrderItem[] = [
-        {
-            id: '1',
-            name: 'Wireless Bluetooth Headphones',
-            sku: 'WBH-001',
-            price: 79.99,
-            quantity: 1,
-            image: '/placeholder.svg?height=60&width=60',
-        },
-        {
-            id: '2',
-            name: 'Premium Cotton T-Shirt',
-            sku: 'PCT-002',
-            price: 29.99,
-            quantity: 2,
-            image: '/placeholder.svg?height=60&width=60',
-        },
-    ];
-
     const statusHistory: StatusHistory[] = [
         {
             status: 'pending',
@@ -114,11 +86,6 @@ export default function Component({ order }: { order: Order }) {
             note: 'Items picked and being prepared for shipment',
         },
     ];
-
-    const subtotal = orderItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const shipping = 9.99;
-    const tax = subtotal * 0.08;
-    const total = subtotal + shipping + tax;
 
     const handleStatusUpdate = () => {
         setCurrentStatus(newStatus);
@@ -220,7 +187,7 @@ export default function Component({ order }: { order: Order }) {
                         )}
 
                         {/* Order Items */}
-                        <Card className="opacity-30">
+                        <Card>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2">
                                     <Package className="h-5 w-5" />
@@ -232,18 +199,18 @@ export default function Component({ order }: { order: Order }) {
                                     {orderItems.map((item) => (
                                         <div key={item.id} className="flex items-center gap-4 rounded-lg border p-4">
                                             <img
-                                                src={item.image || '/placeholder.svg'}
-                                                alt={item.name}
+                                                src={item.product.cover}
+                                                alt={item.product.name}
                                                 className="bg-muted h-16 w-16 rounded-lg object-cover"
                                             />
                                             <div className="flex-1">
-                                                <h4 className="font-medium">{item.name}</h4>
-                                                <p className="text-muted-foreground text-sm">SKU: {item.sku}</p>
+                                                <h4 className="font-medium">{item.product.name}</h4>
+                                                <p className="text-muted-foreground text-sm">SKU: {item.product.sku}</p>
                                                 <p className="text-muted-foreground text-sm">Quantity: {item.quantity}</p>
                                             </div>
                                             <div className="text-right">
                                                 <p className="font-semibold">${(item.price * item.quantity).toFixed(2)}</p>
-                                                <p className="text-muted-foreground text-sm">${item.price.toFixed(2)} each</p>
+                                                <p className="text-muted-foreground text-sm">${item.price} each</p>
                                             </div>
                                         </div>
                                     ))}
@@ -252,9 +219,9 @@ export default function Component({ order }: { order: Order }) {
                                 <Separator className="my-4" />
 
                                 <div className="space-y-2">
-                                    <div className="flex justify-between text-sm">
+                                    {/* <div className="flex justify-between text-sm">
                                         <span>Subtotal</span>
-                                        <span>${subtotal.toFixed(2)}</span>
+                                        <span>${order.total_amount}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span>Shipping</span>
@@ -263,11 +230,11 @@ export default function Component({ order }: { order: Order }) {
                                     <div className="flex justify-between text-sm">
                                         <span>Tax</span>
                                         <span>${tax.toFixed(2)}</span>
-                                    </div>
+                                    </div> */}
                                     <Separator />
                                     <div className="flex justify-between font-semibold">
                                         <span>Total</span>
-                                        <span>${total.toFixed(2)}</span>
+                                        <span>${order.total_amount}</span>
                                     </div>
                                 </div>
                             </CardContent>
@@ -364,8 +331,11 @@ export default function Component({ order }: { order: Order }) {
                             <CardContent className="space-y-3">
                                 <div className="text-sm">
                                     <p className="font-medium">{orderData.payment.method}</p>
-                                    <p className="text-muted-foreground">Transaction ID: {orderData.payment.transactionId}</p>
-                                    <p className="font-semibold text-green-600">Rs. {order.total_amount} Paid</p>
+                                    <p className="text-muted-foreground">Transaction ID: {order.razorpay_payment_id}</p>
+
+                                    {order.payment_status === 'completed' && (
+                                        <p className="font-semibold text-green-600">Rs. {order.total_amount} Paid</p>
+                                    )}
                                 </div>
                             </CardContent>
                         </Card>

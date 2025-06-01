@@ -77,6 +77,8 @@ export interface Order {
     city: string;
     phone_number: string;
 
+    razorpay_payment_id?: string;
+
     customer?: User;
     orderItems: Product[];
 }
@@ -89,6 +91,9 @@ export interface CartItem {
     created_at: Date;
     updated_at: Date;
     product: Product;
+
+    // FOR ORDER ITEMS
+    price: number;
 }
 export interface Cart {
     id: number;
