@@ -52,6 +52,7 @@ export default function Component({
             description: 'Test Transaction',
             order_id: order_id,
             callback_url: route('api.payment.callback', db_order_id),
+
             handler: async (response) => {
                 console.log(response);
                 await fetch(route('api.payment.callback', db_order_id), {
