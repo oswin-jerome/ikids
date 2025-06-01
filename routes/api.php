@@ -51,7 +51,7 @@ Route::post("payments/callback/{order:order_id}", function (Order $order, Razorp
 
 Route::post("razorpay/callback", function (Request $request) {
 
-    Log::info($request);
+    // Log::info($request);
 
     return response()->json();
 })->name("api.razorpay.callback");
