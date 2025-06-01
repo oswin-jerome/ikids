@@ -193,7 +193,7 @@ export default function Component({ order, orderItems, orderEvents }: { order: O
                                             <div className="flex-1 pb-4">
                                                 <div className="mb-1 flex items-start justify-between">
                                                     <p className="font-medium">{entry.title}</p>
-                                                    <p className="text-muted-foreground text-sm">{moment(entry.created_at).format('D M Y')}</p>
+                                                    <p className="text-muted-foreground text-sm">{moment(entry.created_at).format('D MMM Y')}</p>
                                                 </div>
                                                 <p className="text-muted-foreground mb-1 text-sm">Updated by: {entry.actor}</p>
                                                 {entry.description && <p className="text-sm">{entry.description}</p>}
