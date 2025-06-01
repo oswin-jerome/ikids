@@ -33,6 +33,7 @@ Route::get('/products', function (Request $request) {
 
 Route::post("payments/callback/{order:order_id}", function (Order $order, RazorpayCallbackRequest $request) {
 
+    Log::info($order);
     Log::info($request);
     if ($request->razorpay_signature != null)
         $order->payment_status = "completed";
