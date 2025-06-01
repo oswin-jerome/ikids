@@ -197,7 +197,7 @@ export default function Component({ order, orderItems, orderEvents }: { order: O
                                                 <div className="mb-1 flex items-start justify-between">
                                                     <p className="font-medium">{entry.title}</p>
                                                     <p className="text-muted-foreground text-sm">
-                                                        {moment(entry.created_at).format('D MMM Y H:s a')}
+                                                        {moment(entry.created_at).format('D MMM Y h:s a')}
                                                     </p>
                                                 </div>
                                                 <p className="text-muted-foreground mb-1 text-sm">Updated by: {entry.actor}</p>
