@@ -38,15 +38,15 @@ Route::post("payments/callback/{order:order_id}", function (Order $order, Razorp
     // return response()->json();
     Log::info($order);
     Log::info($request);
-    if ($request->razorpay_signature != null)
-        $order->payment_status = "completed";
-    else {
-        $order->payment_status = "failed";
-        $order->status = "cancelled";
-    }
+    // if ($request->razorpay_signature != null)
+    //     $order->payment_status = "completed";
+    // else {
+    //     $order->payment_status = "failed";
+    //     $order->status = "cancelled";
+    // }
 
 
-    $order->save();
+    // $order->save();
 
     return response()->json();
 })->name("api.payment.callback");
@@ -57,6 +57,20 @@ Route::post("razorpay/callback", function (Request $request) {
     $event = $request->get("event");
 
     if ($event == "payment.authorized") {
+        $order_id = $request->get("payload")['payment']['entity']['order_id'];
+        $payment_id = $request->get("payload")['payment']['entity']['id'];
+        $order = Order::where("razorpay_order_id", $order_id)->first();
+        $order->payment_status = "completed";
+        $order->razorpay_payment_id = $payment_id;
+        $order->save();
+    } else if ($event == "payment.failed") {
+        $order_id = $request->get("payload")['payment']['entity']['order_id'];
+        $payment_id = $request->get("payload")['payment']['entity']['id'];
+        $order = Order::where("razorpay_order_id", $order_id)->first();
+        $order->payment_status = "failed";
+        $order->status = "cancelled";
+        $order->razorpay_payment_id = $payment_id;
+        $order->save();
     }
 
     return response()->json();

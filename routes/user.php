@@ -184,7 +184,8 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 		$cart = Cart::firstOrCreate([
 			'user_id' => Auth::id()
 		]);
-
+		$order->razorpay_order_id = $data->id;
+		$order->save();
 		return redirect()->route("user.checkout.payment", [
 			"orderId" => $data->id,
 			"db_order_id" => $order->order_id
