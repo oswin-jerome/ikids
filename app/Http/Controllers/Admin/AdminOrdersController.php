@@ -33,7 +33,8 @@ class AdminOrdersController extends Controller
 
         return Inertia::render("admin/orders/Index", [
             "orders" => $orders,
-            "status" => $status
+            "status" => $status,
+            "payment_status" => $payment_status
         ]);
     }
 

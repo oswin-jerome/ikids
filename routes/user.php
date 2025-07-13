@@ -170,6 +170,7 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 			]);
 
 			$totalAmount += $product->selling_price * $quantity;
+			// TODO: Update product stock.
 		}
 
 		$order->total_amount = $totalAmount;

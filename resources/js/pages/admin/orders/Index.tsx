@@ -8,10 +8,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { BreadcrumbItem, Order } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { View } from 'lucide-react';
 import moment from 'moment';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -26,7 +26,9 @@ type QueryType = {
     order_id: string;
 };
 
-const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string }) => {
+const AdminOrdersIndex = ({ orders, status, payment_status }: { orders: Order[]; status: string; payment_status: string }) => {
+    const { props } = usePage();
+
     const [query, setQuery] = useState({
         status: 'all',
         payment_status: 'all',
@@ -42,6 +44,16 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
             { preserveState: true },
         );
     };
+
+    useEffect(() => {
+        setQuery((q) => {
+            return {
+                ...q,
+                payment_status: (props.payment_status as string) ?? 'all',
+                status: (props.status as string) ?? 'all',
+            };
+        });
+    }, [props]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -91,7 +103,7 @@ const AdminOrdersIndex = ({ orders, status }: { orders: Order[]; status: string 
                     <div className="grid gap-2">
                         <Label>Payment Status</Label>
                         <Select
-                            defaultValue={status}
+                            defaultValue={payment_status}
                             onValueChange={(val) => {
                                 setQuery({ ...query, payment_status: val });
                                 handleQuery({ ...query, payment_status: val });
