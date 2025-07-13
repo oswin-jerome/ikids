@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Requests\User\StoreCheckoutRequest;
 use App\Http\Resources\CartItemResource;
 use App\Http\Resources\CartResource;
@@ -47,7 +48,9 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 	Route::resource("orders", OrderController::class);
 
 	Route::get('orders', function () {
-		$orders = Auth::user()->orders()->orderBy("created_at", "desc")->get();
+		/** @var \App\Models\User $user */
+		$user = Auth::user();
+		$orders = $user->orders()->orderBy("created_at", "desc")->get();
 		return Inertia::render('user/Orders', [
 			"orders" => $orders
 		]);
@@ -129,11 +132,6 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 		return redirect()->route("user.cart");
 	})->name('cart.add');
 
-
-	Route::get('subscriptions', function () {
-		return Inertia::render('user/Subscriptions');
-	})->name('subscriptions');
-
 	Route::post("checkout", function (StoreCheckoutRequest $request) {
 		$request->validated();
 		$user = Auth::user();
@@ -203,4 +201,10 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 			"db_order_id" => $order->order_id
 		]);
 	})->name("checkout");
+
+
+	Route::get('subscriptions', function () {
+		return Inertia::render('user/Subscriptions');
+	})->name('subscriptions');
+	Route::resource("subscriptions", SubscriptionController::class);
 });
