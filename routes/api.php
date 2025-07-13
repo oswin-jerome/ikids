@@ -50,12 +50,12 @@ Route::post("razorpay/callback", function (Request $request) {
     Log::info($request);
     $notes = $request->get("payload")['payment']['entity']['notes'];
 
-    if ($notes['type'] == 'product') {
+    if (isset($notes['type']) && $notes['type'] == 'product') {
         Log::info("Razorpay Product Callback");
         processProductPayment($request);
     }
 
-    if ($notes['type'] == 'subscription') {
+    if (isset($notes['type']) && $notes['type'] == 'subscription') {
         Log::info("Razorpay Subscription Callback");
         processSubscriptionPayments($request);
     }
@@ -70,14 +70,15 @@ function  processSubscriptionPayments(Request $request)
     $event = $request->get("event");
     if ($event == "payment.authorized") {
 
-        if (!$request->has("months")) {
-            Log::error("No months provided in request");
+
+
+        $notes = $request->get("payload")['payment']['entity']['notes'];
+        if (!isset($notes['months']) || !isset($notes['subscribable_product_id']) || !isset($notes['user_id'])) {
+            Log::error('Invalid subscription details: ' . json_encode($notes));
             return response()->json([
                 'error' => 'No months provided in request.'
             ]);
         }
-
-        $notes = $request->get("payload")['payment']['entity']['notes'];
         $months = $notes['months'];
         $user_id = $notes['user_id'];
         $user = User::findOrFail($user_id);
