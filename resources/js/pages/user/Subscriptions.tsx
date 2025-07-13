@@ -14,8 +14,8 @@ const OrdersPage = ({ subscriptions }: { subscriptions: Subscription[] }) => {
                 <Table className="mt-4">
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Order #</TableHead>
                             <TableHead>Created At</TableHead>
+                            <TableHead>Order #</TableHead>
                             <TableHead>Duration</TableHead>
                             <TableHead>Ends On</TableHead>
                             <TableHead>Status</TableHead>
@@ -28,6 +28,7 @@ const OrdersPage = ({ subscriptions }: { subscriptions: Subscription[] }) => {
                             return (
                                 <TableRow>
                                     <TableCell>{moment(subscription.start_date).format('Do MMM Y')}</TableCell>
+                                    <TableCell>{subscription.subscribable_product.name}</TableCell>
                                     <TableCell>{subscription.months} Months</TableCell>
                                     <TableCell>{moment(subscription.end_date).format('Do MMM Y')}</TableCell>
                                     <TableCell>
