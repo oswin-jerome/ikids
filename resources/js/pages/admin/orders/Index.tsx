@@ -3,11 +3,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
-import { BreadcrumbItem, Order } from '@/types';
+import { BreadcrumbItem, Order, Pagination as PaginationType } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { View } from 'lucide-react';
 import moment from 'moment';
@@ -26,7 +27,8 @@ type QueryType = {
     order_id: string;
 };
 
-const AdminOrdersIndex = ({ orders, status, payment_status }: { orders: Order[]; status: string; payment_status: string }) => {
+const AdminOrdersIndex = ({ ordersPage, status, payment_status }: { ordersPage: PaginationType<Order>; status: string; payment_status: string }) => {
+    const orders = ordersPage.data;
     const { props } = usePage();
 
     const [query, setQuery] = useState({
@@ -180,6 +182,25 @@ const AdminOrdersIndex = ({ orders, status, payment_status }: { orders: Order[];
                     })}
                 </TableBody>
             </Table>
+            <Pagination className="mt-10 mb-10">
+                <PaginationContent>
+                    <PaginationItem>
+                        <PaginationPrevious href={ordersPage.prev_page_url ?? '#'} />
+                    </PaginationItem>
+                    {ordersPage.links.slice(1, ordersPage.links.length - 1).map((e) => {
+                        return (
+                            <PaginationItem>
+                                <PaginationLink isActive={e.active} href={e.url ?? '#'}>
+                                    {e.label}
+                                </PaginationLink>
+                            </PaginationItem>
+                        );
+                    })}
+                    <PaginationItem>
+                        <PaginationNext href={ordersPage.next_page_url ?? '#'} />
+                    </PaginationItem>
+                </PaginationContent>
+            </Pagination>
         </AppLayout>
     );
 };

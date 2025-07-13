@@ -29,10 +29,12 @@ class AdminOrdersController extends Controller
             $orders = $orders->where("payment_status", $payment_status);
         }
         $orders = $orders->orderBy("created_at", "desc");
-        $orders = $orders->get();
+        $orders = $orders->paginate()->withQueryString();;
+
+        // return $orders;
 
         return Inertia::render("admin/orders/Index", [
-            "orders" => $orders,
+            "ordersPage" => $orders,
             "status" => $status,
             "payment_status" => $payment_status
         ]);
