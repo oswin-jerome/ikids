@@ -25,9 +25,7 @@ class StoreSubscriptionRequest extends FormRequest
         return [
             "razorpay_order_id" => "required|string",
             "razorpay_payment_id" => "required|string",
-            "razorpay_signature" => "required|string",
-            "subscribable_product_id" => "required|exists:subscribable_products,id",
-            "months" => "required|integer|min:1|max:12",
+            "razorpay_signature" => "required|string"
         ];
     }
 }

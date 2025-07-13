@@ -3,6 +3,8 @@
 use App\Http\Requests\RazorpayCallbackRequest;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\SubscribableProduct;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
@@ -73,18 +75,40 @@ Route::post("razorpay/callback", function (Request $request) {
 
 
 Route::post("razorpay/subscription/callback", function (Request $request) {
+    Log::info("Razorpay Subscription Callback");
     Log::info($request);
     $event = $request->get("event");
     if ($event == "payment.authorized") {
-        $subscriptionId = $request->get("payload")['subscription']['entity']['id'];
-        $orderId = $request->get("payload")['subscription']['entity']['order_id'];
-        $order = Order::where("razorpay_order_id", $orderId)->first();
-        if ($order) {
-            $order->razorpay_subscription_id = $subscriptionId;
-            $order->save();
-            $order->addEvent("subscription", "Subscription Activated", "Subscription activated with id: " . $subscriptionId, "system");
-        }
-    }
 
+        $months = $request->input('months', 1);
+        $notes = $request->get("payload")['payment']['entity']['notes'];
+        $order_id = $notes['order_id'];
+        $subscribable_product_id = $notes['subscribable_product_id'];
+        $user_id = $notes['user_id'];
+        $user = User::findOrFail($user_id);
+
+
+        $activeSubscription = $$user->subscriptions()
+            ->whereIn('status', ['active', 'pending'])
+            ->where("transaction_id", $request->get("payload")['payment']['entity']['id'])
+            ->exists();
+        // Check if already payment processed though callback
+        if ($activeSubscription) {
+            Log::info("Subscription already in place for user: " . $user->id);
+            return response()->json([
+                'message' => "Subscription already in place."
+            ]);
+        }
+        $subscribableProductId = $request->input('subscribable_product_id');
+        $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
+        $subscription = $user->subscriptions()->create([
+            'subscribable_product_id' => $subscribableProductId,
+            "start_date" => now(),
+            "end_date" => now()->addMonths($months),
+            "amount" => $subscribableProduct->price_per_month * $months,
+            "transaction_id" => $request->get("payload")['payment']['entity']['id'],
+        ]);
+    }
+    Log::info("Razorpay Subscription Callback Completed");
     return response()->json();
 })->name("api.razorpay.subscription.callback");

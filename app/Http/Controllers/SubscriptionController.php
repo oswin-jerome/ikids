@@ -8,6 +8,7 @@ use App\Models\SubscribableProduct;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Razorpay\Api\Api;
 
@@ -40,21 +41,80 @@ class SubscriptionController extends Controller
      */
     public function store(StoreSubscriptionRequest $request)
     {
+        $razorpayPaymentId = $request->input('razorpay_payment_id');
+        $razorpayOrderId = $request->input('razorpay_order_id');
+        $razorpaySignature = $request->input('razorpay_signature');
 
-        $months = $request->input('months', 1);
+        $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
+
+        // Validate payment signature
+        if (!$razorpayOrderId || !$razorpayPaymentId || !$razorpaySignature) {
+            Log::error('Missing Razorpay order ID, payment ID, or signature.');
+            return response()->json([
+                'error' => 'Missing Razorpay order ID, payment ID, or signature.'
+            ], 422);
+        }
+
+        try {
+            $api->utility->verifyPaymentSignature([
+                'razorpay_order_id' => $razorpayOrderId,
+                'razorpay_payment_id' => $razorpayPaymentId,
+                'razorpay_signature' => $razorpaySignature,
+            ]);
+            Log::info('Razorpay payment signature verified successfully.');
+        } catch (\Exception $e) {
+            Log::error('Razorpay payment verification failed: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Payment verification failed. Please try again.'
+            ], 422);
+        }
+
+        // Get order details from Razorpay
+        $order = $api->order->fetch($razorpayOrderId);
+        $notes = $order->notes;
+        Log::info('Razorpay order details:', ['order' => $order]);
+
+        // no months don't proceed
+        if (!isset($notes['months']) || !isset($notes['subscribable_product_id'])) {
+            Log::error('Invalid subscription details: ' . json_encode($notes));
+            return response()->json([
+                'error' => 'Invalid subscription details provided.'
+            ], 422);
+        }
+
+        $months = isset($notes['months']) ? (int)$notes['months'] : 1;
+        $subscribableProductId = $notes['subscribable_product_id'] ?? $request->input('subscribable_product_id');
         $user = $request->user();
 
-        $subscribableProductId = $request->input('subscribable_product_id');
+        // Check if already payment processed though callback
+        $activeSubscription = $user->subscriptions()
+            ->whereIn('status', ['active', 'pending'])
+            ->where("transaction_id", $razorpayPaymentId)
+            ->exists();
+        if ($activeSubscription) {
+            return response()->json([
+                'error' => "Subscription already in place."
+            ], 422);
+        }
+        Log::info('Creating subscription for user:', [
+            'user_id' => $user->id,
+            'subscribable_product_id' => $subscribableProductId,
+            'months' => $months,
+        ]);
+
         $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
         $subscription = $user->subscriptions()->create([
             'subscribable_product_id' => $subscribableProductId,
             "start_date" => now(),
             "end_date" => now()->addMonths($months),
             "amount" => $subscribableProduct->price_per_month * $months,
+            "transaction_id" => $razorpayPaymentId,
         ]);
 
-
-        return redirect()->back();
+        return response()->json([
+            'message' => 'Subscription created successfully.',
+            'subscription' => $subscription,
+        ]);
     }
 
     /**
@@ -98,24 +158,30 @@ class SubscriptionController extends Controller
             'subscribable_product_id' => 'required|exists:subscribable_products,id',
             'months' => 'required|integer|min:1',
         ]);
+        Log::info('Creating subscription order:', $request->all());
         $subscribableProductId = $request->input('subscribable_product_id');
         $months = $request->input('months', 1);
         $user = Auth::user();
 
         $activeSubscription = $request->user()->subscriptions()
-            ->whereIn('status', ['active', 'pending'])
+            ->whereIn('status', ['active'])
             ->exists();
         if ($activeSubscription) {
+            Log::error('User already has an active subscription.');
             return response()->json([
-                'error' => "You already have an active subscription."
-            ]);
+                'message' => "You already have an active subscription."
+            ], 422);
         }
 
         $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
         $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
-
+        Log::info('Creating Razorpay order for subscription:', [
+            'subscribable_product_id' => $subscribableProductId,
+            'months' => $months,
+            'user_id' => $user->id,
+        ]);
         $data = $api->order->create([
-            'receipt'         => 'sub-' . $subscribableProduct->id,
+            'receipt'         => 'sub-' . $subscribableProduct->id . '-' . time(),
             'amount'          => $subscribableProduct->price_per_month * $months * 100, // amount in paise
             'currency'        => 'INR',
             'notes' => [
@@ -124,6 +190,8 @@ class SubscriptionController extends Controller
                 'months' => $months,
             ],
         ]);
+
+        Log::info('Razorpay order created:', ['order' => $data]);
 
         return response()->json([
             'order_id' => $data->id,
