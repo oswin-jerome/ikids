@@ -188,6 +188,7 @@ class SubscriptionController extends Controller
                 'subscribable_product_id' => $subscribableProductId,
                 'user_id' => $user->id,
                 'months' => $months,
+                "type" => "subscription"
             ],
         ]);
 

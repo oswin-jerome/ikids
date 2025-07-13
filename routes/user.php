@@ -189,6 +189,9 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 			'receipt'         => $order->order_id,
 			'amount'          => 100 * 100, // amount in paise
 			'currency'        => 'INR',
+			'notes' => [
+				'type' => "product"
+			],
 		]);
 
 		$cart = Cart::firstOrCreate([
