@@ -17,11 +17,16 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'sku' => fake()->unique()->text(5),
-            'description' => fake()->realText(),
-            'actual_price' => fake()->randomNumber(),
-            'selling_price' => fake()->randomNumber(),
+            'sku' => $this->faker->unique()->word,
+            'slug' => $this->faker->unique()->slug,
+            'name' => $this->faker->name,
+            'description' => $this->faker->paragraph,
+            'type' => $this->faker->randomElement(['single', 'combo']),
+            'actual_price' => $this->faker->randomFloat(2, 100, 100000000),
+            'current_stock' => $this->faker->numberBetween(0, 100),
+            'selling_price' => $this->faker->randomFloat(2, 10, 1000),
+            'created_at' => $this->faker->dateTimeBetween('-1 years', 'now'),
+            'updated_at' => $this->faker->dateTimeBetween('-1 years', 'now'),
         ];
     }
 }
