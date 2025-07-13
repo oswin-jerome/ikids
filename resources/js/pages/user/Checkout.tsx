@@ -56,7 +56,6 @@ export default function Component({
                 console.log(response);
                 await fetch(route('api.payment.callback', db_order_id), {
                     method: 'post',
-
                     body: JSON.stringify(response),
                 });
                 router.get(route('user.orders'));

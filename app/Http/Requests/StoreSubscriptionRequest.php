@@ -23,8 +23,11 @@ class StoreSubscriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'months' => 'sometimes|integer|min:1', // Optional, defaults to 1 month
-            'subscribable_product_id' => 'required|exists:subscribable_products,id', // Ensure the product exists
+            "razorpay_order_id" => "required|string",
+            "razorpay_payment_id" => "required|string",
+            "razorpay_signature" => "required|string",
+            "subscribable_product_id" => "required|exists:subscribable_products,id",
+            "months" => "required|integer|min:1|max:12",
         ];
     }
 }

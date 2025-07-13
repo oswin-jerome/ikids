@@ -9,15 +9,6 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/products', function (Request $request) {
-    // $exactCount = \App\Models\Item::where('name', $search)->count();
-
-    // if ($exactCount > 10) {
-    //     $results = \App\Models\Item::where('name', $search)->get();
-    // } else {
-    //     $results = \App\Models\Item::where('name', 'LIKE', "%{$search}%")
-    //         ->limit(10)
-    //         ->get();
-    // }
 
     $name = $request->get("name");
 
@@ -79,3 +70,21 @@ Route::post("razorpay/callback", function (Request $request) {
 
     return response()->json();
 })->name("api.razorpay.callback");
+
+
+Route::post("razorpay/subscription/callback", function (Request $request) {
+    Log::info($request);
+    $event = $request->get("event");
+    if ($event == "payment.authorized") {
+        $subscriptionId = $request->get("payload")['subscription']['entity']['id'];
+        $orderId = $request->get("payload")['subscription']['entity']['order_id'];
+        $order = Order::where("razorpay_order_id", $orderId)->first();
+        if ($order) {
+            $order->razorpay_subscription_id = $subscriptionId;
+            $order->save();
+            $order->addEvent("subscription", "Subscription Activated", "Subscription activated with id: " . $subscriptionId, "system");
+        }
+    }
+
+    return response()->json();
+})->name("api.razorpay.subscription.callback");

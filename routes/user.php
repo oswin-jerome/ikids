@@ -204,4 +204,6 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 
 
 	Route::resource("subscriptions", SubscriptionController::class);
+	Route::post('subscriptions/create_order', [SubscriptionController::class, 'createOrder'])
+		->name('subscriptions.create_order');
 });

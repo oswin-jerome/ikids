@@ -1,3 +1,4 @@
+import SubscriptionButton from '@/components/subscription-button';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
@@ -17,6 +18,7 @@ const SkippyBlock = () => {
                             </Button>
                         </Link>
                         <Button className="rounded-full py-6">View Sample</Button>
+                        <SubscriptionButton />
                     </div>
                     <p className="mt-6 text-center font-bold">Rs. 1000 / Year</p>
                 </div>

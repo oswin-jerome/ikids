@@ -52,7 +52,7 @@
     <meta name="title" inertia content={{ config('app.name', 'Laravel') }} />
     <meta property="twitter:title" inertia content={{ config('app.name', 'Laravel') }} />
     <meta property="og:title" inertia content={{ config('app.name', 'Laravel') }} />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />

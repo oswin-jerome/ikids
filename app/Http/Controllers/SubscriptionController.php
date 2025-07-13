@@ -6,8 +6,10 @@ use App\Http\Requests\StoreSubscriptionRequest;
 use App\Http\Requests\UpdateSubscriptionRequest;
 use App\Models\SubscribableProduct;
 use App\Models\Subscription;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Razorpay\Api\Api;
 
 class SubscriptionController extends Controller
 {
@@ -38,12 +40,6 @@ class SubscriptionController extends Controller
      */
     public function store(StoreSubscriptionRequest $request)
     {
-        $activeSubscription = $request->user()->subscriptions()
-            ->whereIn('status', ['active', 'pending'])
-            ->exists();
-        if ($activeSubscription) {
-            return redirect()->back()->withErrors(['subscribable_product_id' => 'You already have an active subscription.']);
-        }
 
         $months = $request->input('months', 1);
         $user = $request->user();
@@ -91,5 +87,46 @@ class SubscriptionController extends Controller
     public function destroy(Subscription $subscription)
     {
         //
+    }
+
+    /**
+     * Create an order for the subscription.
+     */
+    public function createOrder(Request $request)
+    {
+        $request->validate([
+            'subscribable_product_id' => 'required|exists:subscribable_products,id',
+            'months' => 'required|integer|min:1',
+        ]);
+        $subscribableProductId = $request->input('subscribable_product_id');
+        $months = $request->input('months', 1);
+        $user = Auth::user();
+
+        $activeSubscription = $request->user()->subscriptions()
+            ->whereIn('status', ['active', 'pending'])
+            ->exists();
+        if ($activeSubscription) {
+            return response()->json([
+                'error' => "You already have an active subscription."
+            ]);
+        }
+
+        $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
+        $api = new Api(config('services.razorpay.key'), config('services.razorpay.secret'));
+
+        $data = $api->order->create([
+            'receipt'         => 'sub-' . $subscribableProduct->id,
+            'amount'          => $subscribableProduct->price_per_month * $months * 100, // amount in paise
+            'currency'        => 'INR',
+            'notes' => [
+                'subscribable_product_id' => $subscribableProductId,
+                'user_id' => $user->id,
+                'months' => $months,
+            ],
+        ]);
+
+        return response()->json([
+            'order_id' => $data->id,
+        ]);
     }
 }
