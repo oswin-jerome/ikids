@@ -86,7 +86,7 @@ function  processSubscriptionPayments(Request $request)
         $subscribableProductId = $notes['subscribable_product_id'];
         $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
 
-        $activeSubscription = $$user->subscriptions()
+        $activeSubscription = $user->subscriptions()
             ->whereIn('status', ['active', 'pending'])
             ->where("transaction_id", $request->get("payload")['payment']['entity']['id'])
             ->exists();
