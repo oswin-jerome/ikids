@@ -38,7 +38,6 @@ const SubscriptionButton = () => {
             name: 'i-Kids',
             description: 'i-Kids Subscription Payment',
             order_id: data.order_id,
-            callback_url: route('api.razorpay.subscription.callback'),
             handler: async (response) => {
                 console.log(response);
                 const res = await fetch(route('user.subscriptions.store'), {
