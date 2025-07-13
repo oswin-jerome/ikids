@@ -203,8 +203,5 @@ Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
 	})->name("checkout");
 
 
-	Route::get('subscriptions', function () {
-		return Inertia::render('user/Subscriptions');
-	})->name('subscriptions');
 	Route::resource("subscriptions", SubscriptionController::class);
 });

@@ -111,7 +111,7 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                                     <Link href={route('user.orders')}>
                                         <DropdownMenuItem>Orders</DropdownMenuItem>
                                     </Link>
-                                    <Link href={route('user.subscriptions')}>
+                                    <Link href={route('user.subscriptions.index')}>
                                         <DropdownMenuItem>Subscriptions</DropdownMenuItem>
                                     </Link>
                                     <Link method="post" href={route('logout')} className="w-full">
