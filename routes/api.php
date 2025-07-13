@@ -53,11 +53,11 @@ Route::post("razorpay/callback", function (Request $request) {
     if (isset($notes['type']) && $notes['type'] == 'product') {
         Log::info("Razorpay Product Callback");
         processProductPayment($request);
-    }
-
-    if (isset($notes['type']) && $notes['type'] == 'subscription') {
+    } else if (isset($notes['type']) && $notes['type'] == 'subscription') {
         Log::info("Razorpay Subscription Callback");
         processSubscriptionPayments($request);
+    } else {
+        Log::error("Unknown Razorpay Callback Type");
     }
 
     return response()->json();
