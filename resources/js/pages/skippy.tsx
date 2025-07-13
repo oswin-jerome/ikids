@@ -85,7 +85,7 @@ export default function Welcome() {
                 </div>
             </section>
             <section>
-                <Subscribe />
+                <Subscribe id="1" />
             </section>
         </WebLayout>
     );

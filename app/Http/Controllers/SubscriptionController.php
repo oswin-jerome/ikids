@@ -22,7 +22,8 @@ class SubscriptionController extends Controller
 
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $subscriptions = $user->subscriptions()->with('subscribableProduct')->get();
+        $subscriptions = $user->subscriptions()->with('subscribableProduct')->orderBy("created_at", "desc")->get();
+        // return $subscriptions;
         return Inertia::render('user/Subscriptions', [
             'subscriptions' => $subscriptions
         ]);
@@ -109,6 +110,7 @@ class SubscriptionController extends Controller
             "end_date" => now()->addMonths($months),
             "amount" => $subscribableProduct->price_per_month * $months,
             "transaction_id" => $razorpayPaymentId,
+            "months" => $months,
         ]);
 
         return response()->json([

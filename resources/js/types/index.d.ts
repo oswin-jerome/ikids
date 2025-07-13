@@ -139,3 +139,31 @@ export interface Link {
     label: string;
     active: boolean;
 }
+
+export interface Subscription {
+    id: number;
+    user_id: number;
+    subscribable_product_id: number;
+    start_date: Date;
+    end_date: Date;
+    status: string;
+    payment_status: string;
+    amount: string;
+    transaction_id: null;
+    created_at: Date;
+    updated_at: Date;
+    subscribable_product: SubscribableProduct;
+    months: number; // Number of months for the subscription
+}
+
+export interface SubscribableProduct {
+    id: number;
+    is_active: number;
+    name: string;
+    description: null;
+    slug: string;
+    sku: string;
+    price_per_month: string;
+    created_at: Date;
+    updated_at: Date;
+}

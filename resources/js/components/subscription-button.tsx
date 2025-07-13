@@ -1,8 +1,9 @@
+import { router } from '@inertiajs/react';
 import { RazorpayOrderOptions, useRazorpay } from 'react-razorpay';
 import { Button } from './ui/button';
 
-const SubscriptionButton = () => {
-    const { Razorpay } = useRazorpay();
+const SubscriptionButton = ({ productId, months, className }: { productId: string; months: number; className: string }) => {
+    const { Razorpay, isLoading } = useRazorpay();
     const handleRazorpayPayment = async () => {
         const csrfMetaTag = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
         if (!csrfMetaTag || !csrfMetaTag.content) {
@@ -16,8 +17,8 @@ const SubscriptionButton = () => {
                 'X-CSRF-TOKEN': csrfToken,
             },
             body: JSON.stringify({
-                subscribable_product_id: 1,
-                months: 1,
+                subscribable_product_id: productId,
+                months: months,
             }),
         });
         if (!res.ok) {
@@ -57,6 +58,10 @@ const SubscriptionButton = () => {
                     const errorData = await res.json();
                     alert(errorData.message || errorData.error || 'Failed to complete subscription');
                     throw new Error('Failed to complete subscription');
+                } else {
+                    router.visit(route('user.subscriptions.index'), {
+                        preserveState: true,
+                    });
                 }
             },
         };
@@ -67,10 +72,11 @@ const SubscriptionButton = () => {
 
     return (
         <Button
+            disabled={isLoading}
             onClick={() => {
                 handleRazorpayPayment();
             }}
-            className="rounded-full py-6"
+            className={'rounded-full py-6 ' + className}
         >
             Subscribe
         </Button>

@@ -2,8 +2,10 @@ import SeoHead from '@/components/SeoHead';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import WebLayout from '@/layouts/web-layout';
+import { Subscription } from '@/types';
+import moment from 'moment';
 
-const OrdersPage = () => {
+const OrdersPage = ({ subscriptions }: { subscriptions: Subscription[] }) => {
     return (
         <WebLayout>
             <SeoHead title="Orders" description="List you orders you have made" />
@@ -13,6 +15,7 @@ const OrdersPage = () => {
                     <TableHeader>
                         <TableRow>
                             <TableHead>Order #</TableHead>
+                            <TableHead>Created At</TableHead>
                             <TableHead>Duration</TableHead>
                             <TableHead>Ends On</TableHead>
                             <TableHead>Status</TableHead>
@@ -21,26 +24,20 @@ const OrdersPage = () => {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        <TableRow>
-                            <TableCell>ABC123</TableCell>
-                            <TableCell>12 Months</TableCell>
-                            <TableCell>12 Dec 2025</TableCell>
-                            <TableCell>
-                                <Badge className="bg-green-500">Active</Badge>
-                            </TableCell>
-                            <TableCell>Rs. 500</TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
-                        <TableRow>
-                            <TableCell>ABC125</TableCell>
-                            <TableCell>3 Months</TableCell>
-                            <TableCell>5 Aug 2025</TableCell>
-                            <TableCell>
-                                <Badge className="bg-red-500">Expired</Badge>
-                            </TableCell>
-                            <TableCell>Rs. 500</TableCell>
-                            <TableCell></TableCell>
-                        </TableRow>
+                        {subscriptions.map((subscription) => {
+                            return (
+                                <TableRow>
+                                    <TableCell>{moment(subscription.start_date).format('Do MMM Y')}</TableCell>
+                                    <TableCell>{subscription.months} Months</TableCell>
+                                    <TableCell>{moment(subscription.end_date).format('Do MMM Y')}</TableCell>
+                                    <TableCell>
+                                        <Badge className="bg-green-500">{subscription.status}</Badge>
+                                    </TableCell>
+                                    <TableCell>Rs. {subscription.amount}</TableCell>
+                                    <TableCell></TableCell>
+                                </TableRow>
+                            );
+                        })}
                     </TableBody>
                 </Table>
             </div>

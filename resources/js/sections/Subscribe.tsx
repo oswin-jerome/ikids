@@ -1,15 +1,15 @@
 'use client';
 
+import SubscriptionButton from '@/components/subscription-button';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Star } from 'lucide-react';
 
-export default function Subscribe() {
+export default function Subscribe({ id }: { id: string }) {
     const plans = [
         {
             id: '3-months',
-            duration: '3 Months',
+            duration: 3,
             price: 250,
             originalPrice: 250,
             savings: 0,
@@ -18,7 +18,7 @@ export default function Subscribe() {
         },
         {
             id: '6-months',
-            duration: '6 Months',
+            duration: 6,
             price: 450,
             originalPrice: 500,
             savings: 50,
@@ -28,7 +28,7 @@ export default function Subscribe() {
 
         {
             id: '12-months',
-            duration: '12 Months',
+            duration: 12,
             price: 850,
             originalPrice: 100,
             savings: 150,
@@ -61,7 +61,7 @@ export default function Subscribe() {
                             )}
 
                             <CardHeader className="pb-4 text-center">
-                                <CardTitle className="text-3xl font-bold text-slate-900">{plan.duration}</CardTitle>
+                                <CardTitle className="text-3xl font-bold text-slate-900">{plan.duration} Months</CardTitle>
                                 <CardDescription className="text-lg text-slate-600">{plan.description}</CardDescription>
                             </CardHeader>
 
@@ -74,18 +74,18 @@ export default function Subscribe() {
                                     <div className="mb-2 text-lg font-semibold text-blue-600">
                                         Save ₹{plan.savings} ({Math.round((plan.savings / plan.originalPrice) * 100)}% off)
                                     </div>
-                                    <div className="text-slate-500">₹{Math.round(plan.price / Number.parseInt(plan.duration))} per month</div>
+                                    <div className="text-slate-500">₹{Math.round(plan.price / plan.duration)} per month</div>
                                 </div>
                             </CardContent>
 
                             <CardFooter>
-                                <Button
+                                <SubscriptionButton
                                     className={`w-full py-6 font-semibold transition-all duration-200 hover:shadow-xl ${
                                         plan.popular ? 'bg-blue-500 hover:bg-blue-600' : 'bg-slate-900 hover:bg-slate-800'
                                     }`}
-                                >
-                                    Add To Cart
-                                </Button>
+                                    productId={id}
+                                    months={plan.duration}
+                                />
                             </CardFooter>
                         </Card>
                     ))}
