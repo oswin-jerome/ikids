@@ -105,6 +105,7 @@ function  processSubscriptionPayments(Request $request)
             "amount" => $subscribableProduct->price_per_month * $months,
             "transaction_id" => $request->get("payload")['payment']['entity']['id'],
             "months" => $months,
+            "status" => 'active',
         ]);
     }
     Log::info("Razorpay Subscription Callback Completed");

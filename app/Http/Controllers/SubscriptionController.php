@@ -101,6 +101,7 @@ class SubscriptionController extends Controller
             'user_id' => $user->id,
             'subscribable_product_id' => $subscribableProductId,
             'months' => $months,
+            "status" => 'active',
         ]);
 
         $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
@@ -111,6 +112,8 @@ class SubscriptionController extends Controller
             "amount" => $subscribableProduct->price_per_month * $months,
             "transaction_id" => $razorpayPaymentId,
             "months" => $months,
+            "status" => 'active',
+
         ]);
 
         return response()->json([
