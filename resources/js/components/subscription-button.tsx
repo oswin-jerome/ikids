@@ -90,9 +90,18 @@ const SubscriptionButton = ({ productId, months, className }: { productId: strin
                 console.log(res);
                 if (!res.ok) {
                     const errorData = await res.json();
-                    toast.error('Failed to complete subscription', {
-                        description: errorData.message || errorData.error || 'An error occurred while completing your subscription.',
-                    });
+                    if (errorData.message !== 'Subscription already in place.') {
+                        toast.error('Failed to complete subscription', {
+                            description: errorData.message || errorData.error || 'An error occurred while completing your subscription.',
+                        });
+                    } else {
+                        toast.success('Subscription completed successfully!', {
+                            description: 'Your subscription has been successfully created.',
+                        });
+                        router.visit(route('user.subscriptions.index'), {
+                            preserveState: true,
+                        });
+                    }
                     return;
                 } else {
                     toast.success('Subscription completed successfully!', {
