@@ -1,5 +1,4 @@
 import { Footer2 } from '@/components/footer2';
-import { Avatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import {
@@ -10,6 +9,7 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
+import { UserInfo } from '@/components/user-info';
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Menu, ShoppingCart } from 'lucide-react';
@@ -98,7 +98,7 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                         {auth.user != null && (
                             <DropdownMenu>
                                 <DropdownMenuTrigger>
-                                    <Avatar className="bg-red-300" />
+                                    <UserInfo user={auth.user} />
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent className="min-w-[300px] lg:min-w-lg">
                                     <DropdownMenuLabel>My Account</DropdownMenuLabel>

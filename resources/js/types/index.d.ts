@@ -142,6 +142,7 @@ export interface Link {
 
 export interface Subscription {
     id: number;
+    subscription_id: string;
     user_id: number;
     subscribable_product_id: number;
     start_date: Date;

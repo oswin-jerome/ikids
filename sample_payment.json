@@ -28,7 +28,8 @@
                 "notes": {
                     "months": 1,
                     "user_id": 2,
-                    "subscribable_product_id": 1
+                    "subscribable_product_id": 1,
+                    "type": "subscription"
                 },
                 "fee": null,
                 "tax": null,

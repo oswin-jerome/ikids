@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSubscriptionRequest;
 use App\Http\Requests\UpdateSubscriptionRequest;
+use App\Services\RazorpayService;
 use App\Models\SubscribableProduct;
 use App\Models\Subscription;
 use Illuminate\Http\Request;
@@ -14,6 +15,14 @@ use Razorpay\Api\Api;
 
 class SubscriptionController extends Controller
 {
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function __construct(private RazorpayService $razorpay)
+    {
+        $this->razorpay = $razorpay;
+    }
     /**
      * Display a listing of the resource.
      */
@@ -185,7 +194,7 @@ class SubscriptionController extends Controller
             'months' => $months,
             'user_id' => $user->id,
         ]);
-        $data = $api->order->create([
+        $data = $this->razorpay->createOrder([
             'receipt'         => 'sub-' . $subscribableProduct->id . '-' . time(),
             'amount'          => $subscribableProduct->price_per_month * $months * 100, // amount in paise
             'currency'        => 'INR',
