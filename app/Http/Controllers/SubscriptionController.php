@@ -186,6 +186,7 @@ class SubscriptionController extends Controller
 
         $activeSubscription = $request->user()->subscriptions()
             ->whereIn('status', ['active'])
+            ->where('subscribable_product_id', $subscribableProductId)
             ->exists();
         if ($activeSubscription) {
             Log::error('User already has an active subscription.');
