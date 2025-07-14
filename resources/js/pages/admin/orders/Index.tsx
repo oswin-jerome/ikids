@@ -25,9 +25,20 @@ type QueryType = {
     status: string;
     payment_status: string;
     order_id: string;
+    type: string;
 };
 
-const AdminOrdersIndex = ({ ordersPage, status, payment_status }: { ordersPage: PaginationType<Order>; status: string; payment_status: string }) => {
+const AdminOrdersIndex = ({
+    ordersPage,
+    status,
+    payment_status,
+    type,
+}: {
+    ordersPage: PaginationType<Order>;
+    status: string;
+    payment_status: string;
+    type: string;
+}) => {
     const orders = ordersPage.data;
     const { props } = usePage();
 
@@ -35,6 +46,7 @@ const AdminOrdersIndex = ({ ordersPage, status, payment_status }: { ordersPage: 
         status: 'all',
         payment_status: 'all',
         order_id: '',
+        type: 'all',
     });
 
     const handleQuery = (da: QueryType) => {
@@ -53,6 +65,7 @@ const AdminOrdersIndex = ({ ordersPage, status, payment_status }: { ordersPage: 
                 ...q,
                 payment_status: (props.payment_status as string) ?? 'all',
                 status: (props.status as string) ?? 'all',
+                type: (props.type as string) ?? 'all',
             };
         });
     }, [props]);
@@ -119,6 +132,25 @@ const AdminOrdersIndex = ({ ordersPage, status, payment_status }: { ordersPage: 
                                 <SelectItem value="pending">Pending</SelectItem>
                                 <SelectItem value="failed">Failed</SelectItem>
                                 <SelectItem value="completed">Completed</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="grid gap-2">
+                        <Label>Type</Label>
+                        <Select
+                            defaultValue={type}
+                            onValueChange={(val) => {
+                                setQuery({ ...query, type: val });
+                                handleQuery({ ...query, type: val });
+                            }}
+                        >
+                            <SelectTrigger>
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All</SelectItem>
+                                <SelectItem value="direct">Direct</SelectItem>
+                                <SelectItem value="subscription">Subscription</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>

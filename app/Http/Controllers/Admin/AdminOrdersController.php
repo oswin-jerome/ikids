@@ -18,6 +18,7 @@ class AdminOrdersController extends Controller
     {
         $status = request("status", "all");
         $payment_status = request("payment_status", "all");
+        $type = request("type", "all");
         $orders = new Order;
 
         $orders = $orders->where("order_id", "like", "%" . request("order_id", "") . "%");
@@ -28,6 +29,9 @@ class AdminOrdersController extends Controller
         if ($payment_status != "all") {
             $orders = $orders->where("payment_status", $payment_status);
         }
+        if ($type != "all") {
+            $orders = $orders->where("type", $type);
+        }
         $orders = $orders->orderBy("created_at", "desc");
         $orders = $orders->paginate()->withQueryString();;
 
@@ -36,7 +40,8 @@ class AdminOrdersController extends Controller
         return Inertia::render("admin/orders/Index", [
             "ordersPage" => $orders,
             "status" => $status,
-            "payment_status" => $payment_status
+            "payment_status" => $payment_status,
+            "type" => $type,
         ]);
     }
 
