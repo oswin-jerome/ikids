@@ -16,9 +16,6 @@ class PaymentProcessingService
 		Log::info($request);
 		$event = $request->get("event");
 		if ($event == "payment.authorized") {
-
-
-
 			$notes = $request->get("payload")['payment']['entity']['notes'];
 			if (!isset($notes['months']) || !isset($notes['subscribable_product_id']) || !isset($notes['user_id'])) {
 				Log::error('Invalid subscription details: ' . json_encode($notes));
@@ -44,7 +41,7 @@ class PaymentProcessingService
 					'message' => "Subscription already in place."
 				]);
 			}
-
+			$address = json_decode($notes['address'] ?? "", true) ?? [];
 			$subscription = $user->subscriptions()->create([
 				'subscribable_product_id' => $subscribableProductId,
 				"start_date" => now(),
@@ -53,6 +50,13 @@ class PaymentProcessingService
 				"transaction_id" => $request->get("payload")['payment']['entity']['id'],
 				"months" => $months,
 				"status" => 'active',
+				"payment_status" => 'completed',
+				"first_name" => $address['first_name'] ?? "",
+				"last_name" => $address['last_name'] ?? "",
+				"address" => $address['address'] ?? "",
+				"postal_code" => $address['postal_code'] ?? "",
+				"city" => $address['city'] ?? "",
+				"phone_number" => $address['phone_number'] ?? "",
 			]);
 		}
 		Log::info("Razorpay Subscription Callback Completed");

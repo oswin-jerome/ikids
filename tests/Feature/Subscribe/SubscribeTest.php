@@ -14,7 +14,7 @@ use Razorpay\Api\Api;
 use Razorpay\Api\Order;
 
 use function PHPUnit\Framework\assertCount;
-
+use function PHPUnit\Framework\assertSame;
 
 test('Able to place razorpay order', function () {
 	$user = User::factory()->create();
@@ -34,6 +34,7 @@ test('Able to place razorpay order', function () {
 		->post(route('user.subscriptions.create_order'), [
 			'subscribable_product_id' => $subscribableProduct->id,
 			'months' => 1,
+			"address" => "{\"first_name\":\"Oswin\",\"last_name\":\"Jerome\",\"phone_number\":\"8344441492\",\"address\":\"4/101 A2/bc2, Jos Cottage, Raphael Street Elanthayadi\\nParvathipuram\\nNAGERCOIL, TAMIL NADU 629003\\nIndia\",\"city\":\"Nagercoil\",\"postal_code\":\"629003\"}"
 		]);
 	$response->assertJson([
 		'order_id' => 'order_123',
@@ -65,12 +66,13 @@ test('Restrict user from subscribing if there is a active subscription', functio
 		->post(route('user.subscriptions.create_order'), [
 			'subscribable_product_id' => $subscribableProduct->id,
 			'months' => 1,
+			"address" => "{\"first_name\":\"Oswin\",\"last_name\":\"Jerome\",\"phone_number\":\"8344441492\",\"address\":\"4/101 A2/bc2, Jos Cottage, Raphael Street Elanthayadi\\nParvathipuram\\nNAGERCOIL, TAMIL NADU 629003\\nIndia\",\"city\":\"Nagercoil\",\"postal_code\":\"629003\"}"
 		]);
 
 	$response->assertJson([
 		'message' => "You already have an active subscription."
 	]);
-	$response->assertStatus(422);
+	$response->assertStatus(200);
 });
 
 test('Users can view their subscriptions', function () {
@@ -157,4 +159,82 @@ test('Razorpay webhook can process payments', function () {
 			->component('user/Subscriptions')
 			->has('subscriptions', 1)
 	);
+});
+
+
+test('Razorpay webhook can process payments with address', function () {
+	$user = User::factory()->create();
+	$subscribableProduct = SubscribableProduct::factory()->create();
+
+	$response = $this->post(route("api.razorpay.callback"), [
+		"entity" => "event",
+		"account_id" => "acc_ENflEsJMwta13P",
+		"event" => "payment.authorized",
+		"contains" => ["payment"],
+		"payload" => [
+			"payment" => [
+				"entity" => [
+					"id" => "pay_QsbtJcwY43a6fs",
+					"entity" => "payment",
+					"amount" => 42793,
+					"currency" => "INR",
+					"status" => "authorized",
+					"order_id" => "order_QsbrvyqV5tHvmW",
+					"invoice_id" => null,
+					"international" => false,
+					"method" => "upi",
+					"amount_refunded" => 0,
+					"refund_status" => null,
+					"captured" => false,
+					"description" => "i-Kids Subscription Payment",
+					"card_id" => null,
+					"bank" => null,
+					"wallet" => null,
+					"vpa" => "success@razorpay",
+					"email" => "john.doe@example.com",
+					"contact" => "+919999999999",
+					"notes" => [
+						"months" => 1,
+						"user_id" => $user->id,
+						"subscribable_product_id" => $subscribableProduct->id,
+						"type" => "subscription",
+						"address" => json_encode([
+							"first_name" => "Oswin",
+							"last_name" => "Jerome",
+							"phone_number" => "8344441492",
+							"address" => "4/101 A2/bc2, Jos Cottage, Raphael Street Elanthayadi\nParvathipuram\nNAGERCOIL, TAMIL NADU 629003\nIndia",
+							"city" => "Nagercoil",
+							"postal_code" => "629003"
+						])
+					],
+					"fee" => null,
+					"tax" => null,
+					"error_code" => null,
+					"error_description" => null,
+					"error_source" => null,
+					"error_step" => null,
+					"error_reason" => null,
+					"acquirer_data" => [
+						"rrn" => "870314994031",
+						"upi_transaction_id" => "5B2FFE77BDBAA01D72CF49707F1631D5"
+					],
+					"created_at" => 1752422458,
+					"upi" => [
+						"vpa" => "success@razorpay"
+					]
+				]
+			]
+		],
+		"created_at" => 1752422458
+	]);
+	FacadesLog::info($response->getContent());
+	$response->assertOk();
+	$user->refresh();
+	$sub = $user->subscriptions->first();
+	assertSame($sub->first_name, "Oswin");
+	assertSame($sub->last_name, "Jerome");
+	assertSame($sub->address, "4/101 A2/bc2, Jos Cottage, Raphael Street Elanthayadi\nParvathipuram\nNAGERCOIL, TAMIL NADU 629003\nIndia");
+	assertSame($sub->postal_code, "629003");
+	assertSame($sub->city, "Nagercoil");
+	assertSame($sub->phone_number, "8344441492");
 });

@@ -9,6 +9,7 @@ import {
     NavigationMenuList,
     NavigationMenuTrigger,
 } from '@/components/ui/navigation-menu';
+import { Toaster } from '@/components/ui/sonner';
 import { UserInfo } from '@/components/user-info';
 import { SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -21,6 +22,8 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
 
     return (
         <div>
+            <Toaster richColors />
+
             <div className="bg-background sticky top-0 z-50 shadow">
                 <nav className="py-1- container flex items-center justify-between">
                     <img src="/assets/images/logo.webp" className="max-w-24 lg:max-w-32" />

@@ -112,7 +112,7 @@ class SubscriptionController extends Controller
             'months' => $months,
             "status" => 'active',
         ]);
-
+        $address = json_decode($notes['address'], true) ?? [];
         $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
         $subscription = $user->subscriptions()->create([
             'subscribable_product_id' => $subscribableProductId,
@@ -122,7 +122,13 @@ class SubscriptionController extends Controller
             "transaction_id" => $razorpayPaymentId,
             "months" => $months,
             "status" => 'active',
-
+            "first_name" => $address['first_name'],
+            "last_name" => $address['last_name'],
+            "address" => $address['address'],
+            "postal_code" => $address['postal_code'],
+            "city" => $address['city'],
+            "phone_number" => $address['phone_number'],
+            "payment_status" => 'completed',
         ]);
 
         return response()->json([
@@ -171,6 +177,7 @@ class SubscriptionController extends Controller
         $request->validate([
             'subscribable_product_id' => 'required|exists:subscribable_products,id',
             'months' => 'required|integer|min:1',
+            'address' => "json|required",
         ]);
         Log::info('Creating subscription order:', $request->all());
         $subscribableProductId = $request->input('subscribable_product_id');
@@ -193,6 +200,7 @@ class SubscriptionController extends Controller
             'subscribable_product_id' => $subscribableProductId,
             'months' => $months,
             'user_id' => $user->id,
+            'address' => $request->input('address', []),
         ]);
         $data = $this->razorpay->createOrder([
             'receipt'         => 'sub-' . $subscribableProduct->id . '-' . time(),
@@ -202,7 +210,8 @@ class SubscriptionController extends Controller
                 'subscribable_product_id' => $subscribableProductId,
                 'user_id' => $user->id,
                 'months' => $months,
-                "type" => "subscription"
+                "type" => "subscription",
+                'address' => $request->input('address', []),
             ],
         ]);
 
