@@ -184,7 +184,7 @@ class SubscriptionController extends Controller
             Log::error('User already has an active subscription.');
             return response()->json([
                 'message' => "You already have an active subscription."
-            ], 422);
+            ], 200);
         }
 
         $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
