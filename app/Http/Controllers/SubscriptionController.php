@@ -104,7 +104,7 @@ class SubscriptionController extends Controller
         if ($activeSubscription) {
             return response()->json([
                 'error' => "Subscription already in place."
-            ], 422);
+            ], 200);
         }
         Log::info('Creating subscription for user:', [
             'user_id' => $user->id,
