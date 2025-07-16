@@ -58,7 +58,7 @@ export default function Component({
                     method: 'post',
                     body: JSON.stringify(response),
                 });
-                router.get(route('user.orders'));
+                router.get(route('user.orders.index'));
             },
             prefill: {
                 name: 'John Doe',

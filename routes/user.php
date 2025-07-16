@@ -45,16 +45,12 @@ Route::get('/shop/{product:slug}', function (Product $product) {
 })->name('shop.product');
 
 Route::middleware(['auth', 'verified'])->name("user.")->group(function () {
-	Route::resource("orders", OrderController::class);
+	Route::resource("orders", OrderController::class)->parameters([
+		'orders' => 'order:order_id'
+	]);
+	Route::get('orders/{order:order_id}/invoice', [OrderController::class, 'showInvoice'])
+		->name('orders.invoice');
 
-	Route::get('orders', function () {
-		/** @var \App\Models\User $user */
-		$user = Auth::user();
-		$orders = $user->orders()->orderBy("created_at", "desc")->get();
-		return Inertia::render('user/Orders', [
-			"orders" => $orders
-		]);
-	})->name('orders');
 
 	Route::get('change-password', function () {
 		return Inertia::render('user/password');

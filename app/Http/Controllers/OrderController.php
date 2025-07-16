@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Http\Resources\OrderItemResource;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\PdfGeneratorService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class OrderController extends Controller
 {
@@ -18,7 +21,12 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $orders = $user->orders()->orderBy("created_at", "desc")->get();
+        return Inertia::render('user/Orders', [
+            "orders" => $orders
+        ]);
     }
 
     /**
@@ -93,7 +101,23 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
-        //
+        $orderItems = $order->orderItems()->with("product")->get();
+        $orderEvents = $order->orderEvents;
+
+        return Inertia::render('user/Orders/OrderDetails', [
+            "order" => $order->load("customer"),
+            "orderItems" => OrderItemResource::collection($orderItems),
+            "orderEvents" => $orderEvents
+        ]);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function showInvoice(Order $order, PdfGeneratorService $pdfGeneratorService)
+    {
+
+        return $pdfGeneratorService->generateOrderInvoice($order);
     }
 
     /**

@@ -1,9 +1,12 @@
 import SeoHead from '@/components/SeoHead';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import WebLayout from '@/layouts/web-layout';
 import { cn } from '@/lib/utils';
 import { Order } from '@/types';
+import { Link } from '@inertiajs/react';
+import { Eye } from 'lucide-react';
 import moment from 'moment';
 const OrdersPage = ({ orders }: { orders: Order[] }) => {
     return (
@@ -57,7 +60,13 @@ const OrdersPage = ({ orders }: { orders: Order[] }) => {
                                             {order.payment_status.charAt(0).toUpperCase() + order.payment_status.substring(1)}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell></TableCell>
+                                    <TableCell>
+                                        <Link href={route('user.orders.show', order.order_id)} className="hover:underline">
+                                            <Button variant={'ghost'} size={'icon'}>
+                                                <Eye />
+                                            </Button>
+                                        </Link>
+                                    </TableCell>
                                 </TableRow>
                             );
                         })}
