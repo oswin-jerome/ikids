@@ -1,4 +1,4 @@
-import { AudioWaveform, BaggageClaim, Command, Frame, GalleryVerticalEnd, Map, PieChart, ShoppingCartIcon, ThumbsUp } from 'lucide-react';
+import { AudioWaveform, BaggageClaim, Command, Frame, GalleryVerticalEnd, Map, PieChart, ShoppingCartIcon, ThumbsUp, Users2 } from 'lucide-react';
 import * as React from 'react';
 
 import { NavMain } from '@/components/nav-main';
@@ -37,6 +37,22 @@ const data = {
             icon: Frame,
             items: [],
             isActive: false,
+        },
+        {
+            title: 'Customers',
+            url: '#',
+            icon: Users2,
+            isActive: false,
+            items: [
+                {
+                    title: 'Create Customer',
+                    url: route('admin.subscribable-products.index'),
+                },
+                {
+                    title: 'List Customers',
+                    url: route('admin.users.index'),
+                },
+            ],
         },
         {
             title: 'Products',

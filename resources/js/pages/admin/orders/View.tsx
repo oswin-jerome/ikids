@@ -6,8 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import AppLayout from '@/layouts/app-layout';
+import { cn } from '@/lib/utils';
 import { CartItem, Order, OrderEvent } from '@/types';
-import { CheckCircle, Clock, CreditCard, Edit, Mail, MapPin, Package, Phone, RefreshCw, Truck, User, X } from 'lucide-react';
+import { CheckCircle, Clock, CreditCard, Edit, FileSpreadsheet, Mail, MapPin, Package, Phone, RefreshCw, Truck, User, X } from 'lucide-react';
 import moment from 'moment';
 import { useState } from 'react';
 import UpdateOrder from './UpdateOrder';
@@ -90,7 +91,17 @@ export default function Component({ order, orderItems, orderEvents }: { order: O
                 {/* Header */}
                 <div className="mb-6 flex items-start justify-between">
                     <div>
-                        <h1 className="mb-2 text-2xl font-bold">Order {order.order_id}</h1>
+                        <h1 className="mb-2 flex items-center gap-4 text-2xl font-bold">
+                            Order {order.order_id}{' '}
+                            <Badge
+                                className={cn('capitalize', {
+                                    'bg-violet-400': order.type === 'subscription',
+                                    'bg-amber-400': order.type === 'direct',
+                                })}
+                            >
+                                {order.type}
+                            </Badge>
+                        </h1>
                         <p className="text-muted-foreground">Placed on {new Date(order.created_at).toLocaleDateString()}</p>
                     </div>
                     <div className="flex items-center gap-2">
@@ -282,6 +293,12 @@ export default function Component({ order, orderItems, orderEvents }: { order: O
                                 <CardTitle>Quick Actions</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-2">
+                                <a href={route('user.orders.invoice', order.order_id)} className="block" target="_blank">
+                                    <Button variant="outline" className="w-full justify-start">
+                                        <FileSpreadsheet className="mr-2 h-4 w-4" />
+                                        View Invoice
+                                    </Button>
+                                </a>
                                 <Button variant="outline" className="w-full justify-start">
                                     <Mail className="mr-2 h-4 w-4" />
                                     Send Email Update

@@ -1,8 +1,9 @@
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem, Subscription } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import moment from 'moment';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -35,7 +36,11 @@ const AdminSubscribableProductIndex = ({ subscriptions }: { subscriptions: Subsc
                         return (
                             <TableRow key={subscription.id}>
                                 <TableCell>{subscription.id}</TableCell>
-                                <TableCell>{subscription.customer?.name || 'N/A'}</TableCell>
+                                <TableCell>
+                                    <Link href={route('admin.users.show', subscription.customer?.id)}>
+                                        <Button variant={'link'}>{subscription.customer?.name || 'N/A'}</Button>
+                                    </Link>
+                                </TableCell>
                                 <TableCell>{subscription.subscribable_product.name}</TableCell>
                                 <TableCell>{subscription.months}</TableCell>
                                 <TableCell>{subscription.amount}</TableCell>

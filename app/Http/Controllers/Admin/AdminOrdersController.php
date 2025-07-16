@@ -32,7 +32,7 @@ class AdminOrdersController extends Controller
         if ($type != "all") {
             $orders = $orders->where("type", $type);
         }
-        $orders = $orders->orderBy("created_at", "desc");
+        $orders = $orders->with("customer")->orderBy("created_at", "desc");
         $orders = $orders->paginate()->withQueryString();;
 
         // return $orders;

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminCustomerController;
 use App\Http\Controllers\Admin\AdminOrdersController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminStockController;
@@ -25,6 +26,7 @@ Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])->prefix("admin
     Route::post("orders/{order}/status", [AdminOrdersController::class, 'updateStatus'])->name("orders.update.status");
     Route::resource("subscribable-products", AdminSubscribableProductController::class);
     Route::resource("subscriptions", AdminSubscriptionController::class);
+    Route::resource("users", AdminCustomerController::class);
 });
 
 

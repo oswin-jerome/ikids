@@ -160,6 +160,7 @@ const AdminOrdersIndex = ({
                 <TableHeader>
                     <TableRow>
                         <TableHead>Order #</TableHead>
+                        <TableHead>Customer</TableHead>
                         <TableHead>Date</TableHead>
                         <TableHead>Amount</TableHead>
                         <TableHead>Type</TableHead>
@@ -173,6 +174,11 @@ const AdminOrdersIndex = ({
                         return (
                             <TableRow key={'orders_' + order.id}>
                                 <TableCell>{order.order_id}</TableCell>
+                                <TableCell>
+                                    <Link href={route('admin.users.show', order.customer?.id)}>
+                                        <Button variant={'link'}>{order.customer?.name || 'N/A'}</Button>
+                                    </Link>
+                                </TableCell>
                                 <TableCell>{moment(order.created_at).format('D MMM Y H:ss a')}</TableCell>
                                 <TableCell>Rs. {order.total_amount}</TableCell>
                                 <TableCell>{order.type}</TableCell>
