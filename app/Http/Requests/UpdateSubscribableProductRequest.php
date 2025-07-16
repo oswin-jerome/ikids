@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateSubscribableProductRequest extends FormRequest
 {
@@ -11,7 +12,8 @@ class UpdateSubscribableProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        // TODO: Admin authorization logic
+        return Auth::check();
     }
 
     /**
@@ -22,7 +24,12 @@ class UpdateSubscribableProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'string', 'max:255'],
+            'price_per_month' => ['required', 'numeric', 'min:0'],
+            'description' => ['nullable', 'string'],
+            'slug' => ['required', 'string', 'max:255'],
+            'sku' => ['required', 'string', 'max:100'],
+            'is_active' => ['required', 'boolean'],
         ];
     }
 }

@@ -11,6 +11,7 @@ use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderEvent;
 use App\Models\Product;
+use App\Models\SubscribableProduct;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Request;
@@ -23,11 +24,17 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/skippy', function () {
-	return Inertia::render('skippy');
+	$subscribableProduct = SubscribableProduct::where("slug", "skippy")->first();
+	return Inertia::render('skippy', [
+		'subscribableProduct' => $subscribableProduct,
+	]);
 })->name('skippy');
 
 Route::get('/scikids', function () {
-	return Inertia::render('scikids');
+	$subscribableProduct = SubscribableProduct::where("slug", "scikids")->first();
+	return Inertia::render('scikids', [
+		'subscribableProduct' => $subscribableProduct,
+	]);
 })->name('scikids');
 
 Route::get('/shop', function () {

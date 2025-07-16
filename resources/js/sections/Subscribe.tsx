@@ -3,15 +3,16 @@
 import SubscriptionButton from '@/components/subscription-button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { SubscribableProduct } from '@/types';
 import { Star } from 'lucide-react';
 
-export default function Subscribe({ id }: { id: string }) {
+export default function Subscribe({ id, subscribableProduct }: { id: string; subscribableProduct: SubscribableProduct }) {
     const plans = [
         {
             id: '3-months',
             duration: 3,
-            price: 250,
-            originalPrice: 250,
+            price: subscribableProduct.price_per_month * 3,
+            originalPrice: subscribableProduct.price_per_month * 3,
             savings: 0,
             popular: false,
             description: 'Perfect for casual readers',
@@ -19,8 +20,8 @@ export default function Subscribe({ id }: { id: string }) {
         {
             id: '6-months',
             duration: 6,
-            price: 450,
-            originalPrice: 500,
+            price: subscribableProduct.price_per_month * 6,
+            originalPrice: subscribableProduct.price_per_month * 6 + 50,
             savings: 50,
             popular: false,
             description: 'Perfect for casual readers',
@@ -29,8 +30,8 @@ export default function Subscribe({ id }: { id: string }) {
         {
             id: '12-months',
             duration: 12,
-            price: 850,
-            originalPrice: 100,
+            price: subscribableProduct.price_per_month * 12,
+            originalPrice: subscribableProduct.price_per_month * 12 + 150,
             savings: 150,
             popular: true,
             description: 'Best value for book lovers',

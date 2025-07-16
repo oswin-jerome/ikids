@@ -9,4 +9,11 @@ class SubscribableProduct extends Model
 {
     /** @use HasFactory<\Database\Factories\SubscribableProductFactory> */
     use HasFactory;
+
+    protected $guarded = [];
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 }

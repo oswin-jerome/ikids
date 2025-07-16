@@ -2,8 +2,9 @@ import SeoHead from '@/components/SeoHead';
 import { Button } from '@/components/ui/button';
 import WebLayout from '@/layouts/web-layout';
 import Subscribe from '@/sections/Subscribe';
+import { SubscribableProduct } from '@/types';
 
-export default function Welcome() {
+export default function Welcome({ subscribableProduct }: { subscribableProduct: SubscribableProduct }) {
     // const { auth } = usePage<SharedData>().props;
 
     return (
@@ -64,7 +65,7 @@ export default function Welcome() {
                 </div>
             </section>
             <section>
-                <Subscribe id="2" />
+                <Subscribe subscribableProduct={subscribableProduct} id="2" />
             </section>
         </WebLayout>
     );

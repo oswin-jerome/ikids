@@ -1,18 +1,24 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSubscribableProductRequest;
 use App\Http\Requests\UpdateSubscribableProductRequest;
 use App\Models\SubscribableProduct;
 
-class SubscribableProductController extends Controller
+class AdminSubscribableProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
+        $subscribableProducts = SubscribableProduct::withCount("subscriptions")->get();
+        // return $subscribableProducts;
+        return inertia('admin/SubscribableProduct/Index', [
+            'subscribableProducts' => $subscribableProducts,
+        ]);
         //
     }
 
@@ -37,7 +43,9 @@ class SubscribableProductController extends Controller
      */
     public function show(SubscribableProduct $subscribableProduct)
     {
-        //
+        return inertia('admin/SubscribableProduct/Show', [
+            'subscribableProduct' => $subscribableProduct,
+        ]);
     }
 
     /**
@@ -53,7 +61,8 @@ class SubscribableProductController extends Controller
      */
     public function update(UpdateSubscribableProductRequest $request, SubscribableProduct $subscribableProduct)
     {
-        //
+        $subscribableProduct->update($request->validated());
+        return redirect()->back();
     }
 
     /**

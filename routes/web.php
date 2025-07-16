@@ -3,6 +3,8 @@
 use App\Http\Controllers\Admin\AdminOrdersController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminStockController;
+use App\Http\Controllers\Admin\AdminSubscribableProductController;
+use App\Http\Controllers\Admin\AdminSubscriptionController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
@@ -21,6 +23,8 @@ Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])->prefix("admin
     Route::resource("stocks", AdminStockController::class);
     Route::resource("orders", AdminOrdersController::class);
     Route::post("orders/{order}/status", [AdminOrdersController::class, 'updateStatus'])->name("orders.update.status");
+    Route::resource("subscribable-products", AdminSubscribableProductController::class);
+    Route::resource("subscriptions", AdminSubscriptionController::class);
 });
 
 

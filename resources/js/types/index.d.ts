@@ -155,16 +155,18 @@ export interface Subscription {
     updated_at: Date;
     subscribable_product: SubscribableProduct;
     months: number; // Number of months for the subscription
+    customer?: User;
 }
 
 export interface SubscribableProduct {
     id: number;
-    is_active: number;
+    is_active: boolean;
     name: string;
-    description: null;
+    description: string;
     slug: string;
     sku: string;
-    price_per_month: string;
+    price_per_month: number;
     created_at: Date;
     updated_at: Date;
+    subscriptions_count: number;
 }

@@ -10,7 +10,7 @@ interface AppLayoutProps {
 
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
     <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
-        <Toaster />
+        <Toaster richColors />
         <div className="p-4">{children}</div>
     </AppLayoutTemplate>
 );
