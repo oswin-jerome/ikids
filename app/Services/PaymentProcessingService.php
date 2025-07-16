@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\SubscribableProduct;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PaymentProcessingService
@@ -70,14 +71,31 @@ class PaymentProcessingService
 		$event = $request->get("event");
 		if ($event == "payment.authorized") {
 
-			$order_id = $request->get("payload")['payment']['entity']['order_id'];
-			$payment_id = $request->get("payload")['payment']['entity']['id'];
-			$order = Order::where("razorpay_order_id", $order_id)->first();
-			$order->payment_status = "completed";
-			$order->razorpay_payment_id = $payment_id;
-			$order->save();
+			try {
+				// DB::beginTransaction();
+				$order_id = $request->get("payload")['payment']['entity']['order_id'];
+				$payment_id = $request->get("payload")['payment']['entity']['id'];
+				$order = Order::where("razorpay_order_id", $order_id)->first();
+				$order->payment_status = "completed";
+				$order->razorpay_payment_id = $payment_id;
+				$order->save();
+				Log::info("Payment status updated payID: " . $payment_id . " Order ID: " . $order->order_id);
 
-			$order->addEvent("payment", "Payment Success", "Received payment with pay id: " . $payment_id, "system");
+				// Update stock
+				foreach ($order->orderItems as $orderItem) {
+					/** @var App\Models\Product $product */
+					$product = $orderItem->product;
+					$product->current_stock = $product->current_stock - $orderItem->quantity;
+					$product->save();
+				}
+				$order->addEvent("payment", "Payment Success", "Received payment with pay id: " . $payment_id, "system");
+				// DB::commit();
+			} catch (\Exception $e) {
+				Log::error("Unable to process order | PaymentProcessingService::class");
+				Log::error($e);
+				Log::error($request);
+				$order->addEvent("payment", "Failed Processing order", "Received payment with pay id: " . $payment_id . " but unable to process your order, please contact support", "system");
+			}
 		} else if ($event == "payment.failed") {
 			$order_id = $request->get("payload")['payment']['entity']['order_id'];
 			$payment_id = $request->get("payload")['payment']['entity']['id'];
