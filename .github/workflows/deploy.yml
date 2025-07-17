@@ -22,7 +22,7 @@ jobs:
 
       - name: Run commands on remote server
         run: |
-          ssh -o StrictHostKeyChecking=no oswin@home.oswinjerome.in << 'EOF'
+          ssh -o StrictHostKeyChecking=no oswin@home.oswinjerome.in -p 11 << 'EOF'
             cd ~/
             ls
             
