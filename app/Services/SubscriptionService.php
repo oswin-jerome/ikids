@@ -36,6 +36,8 @@ class SubscriptionService
 				"city" => "$subscription->user->city",
 				"postal_code" => "$subscription->user->postal_code",
 			]);
+			$order->addEvent("order", "Order Placed", "Subscription scheduler placed an order", "system");
+
 			// $order->products()->attach($subscription->plan->products->pluck('id')->toArray(), [
 			// 	'quantity' => 1,
 			// 	'price' => $subscription->plan->amount

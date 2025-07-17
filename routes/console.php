@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Order;
 use App\Services\SubscriptionService;
+use Carbon\Carbon;
 use Illuminate\Container\Attributes\Log;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
@@ -17,3 +19,14 @@ Schedule::call(function (SubscriptionService $subscriptionService) {
     $subscriptionService->processMonthlySubscriptions();
     FacadesLog::info('Subscription scheduler completed ' . now());
 })->dailyAt("23:55")->name('Subscription Scheduler')->withoutOverlapping();
+
+Schedule::call(function () {
+    $cutoff = Carbon::now()->subDays(2);
+
+    $deleted = Order::where("payment_status", "pending")
+        ->where("status", "pending")
+        ->where("created_at", "<", $cutoff)
+        ->delete();
+
+    FacadesLog::info("Stale orders deleted", ['count' => $deleted]);
+})->everyMinute()->name('Stale remover')->withoutOverlapping();
