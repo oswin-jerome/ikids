@@ -25,6 +25,6 @@ jobs:
           # Username for authentication. eg: root
             username: oswin
             # private key for either key-based or hostbased user authentication (OpenSSH format). 
-            privateKey: secrets.SSH_PRIVATE_KEY
+            privateKey: ${{secrets.SSH_PRIVATE_KEY}}
           # The shell command you want to execute. Multiple commands are separated by newlines. 
             command: ls
