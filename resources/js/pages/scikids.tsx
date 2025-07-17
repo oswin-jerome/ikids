@@ -59,9 +59,6 @@ export default function Welcome({ subscribableProduct }: { subscribableProduct: 
                             <h5 className="inline font-bold"> STEM Exploration </h5>- Covers topics like space, oceans, energy, and more!
                         </li>
                     </ul>
-                    <div className="mt-6 flex justify-center">
-                        <Button variant={'subscribe'}>Subscribe Now</Button>
-                    </div>
                 </div>
             </section>
             <section>
