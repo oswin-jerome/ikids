@@ -80,9 +80,6 @@ export default function Welcome({ subscribableProduct }: { subscribableProduct: 
                             adventures in every issue!
                         </li>
                     </ul>
-                    <div className="mt-6 flex justify-center">
-                        <Button variant={'subscribe'}>Subscribe Now</Button>
-                    </div>
                 </div>
             </section>
             <section>
