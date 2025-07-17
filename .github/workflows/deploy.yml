@@ -12,20 +12,27 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: SSH Deployment
+      - name: ssh-scp-ssh-pipelines
         # You may pin to the exact commit or the version.
-        # uses: saranraj3195/sparkout-deployment@c4665eb5fc6ae732e5f15341125b89c3c96b9680
-        uses: saranraj3195/sparkout-deployment@v2
+        # uses: cross-the-world/ssh-scp-ssh-pipelines@78e864b4890087a58248ff39320406971ca88b89
+        uses: cross-the-world/ssh-scp-ssh-pipelines@v1.1.4
         with:
-          # SSH private key for authentication
-          DEPLOY_KEY: ${{secrets.SSH_PRIVATE_KEY}}
-          # SSH username
-          USERNAME: oswin
-          # IP address of the server
-          SERVER_IP: home.oswinjerome.in
-          # SSH port of the server
-          SERVER_PORT: 11
-          # Destination directory on the server
-          SERVER_DESTINATION: ~/Laravel/ikids
-
+          # ssh remote host
+          host: home.oswinjerome.in
+          # ssh remote port
+          port: 11
+          # ssh remote user
+          user: oswin
+          # content of ssh private key. ex raw content of ~/.ssh/id_rsa
+          key: ${{secrets.SSH_PRIVATE_KEY}}
+          # # ssh remote password
+          # # connection timeout to remote host
+          # connect_timeout: # optional, default is 30s
+          # # execute pre-commands before scp
+          # first_ssh: # optional
+          # # scp from local to remote
+          # scp: # optional
+          # # execute post-commands after scp
+          # last_ssh: # optional
+          
       
