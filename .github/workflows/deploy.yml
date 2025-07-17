@@ -12,19 +12,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: ssh-tool
-      # You may pin to the exact commit or the version.
-      # uses: Comori/ssh@49710215d1c46069e078b707a203644027e9c616
-        uses: Comori/ssh@v0.0.7
+      - name: SSH Deployment
+        # You may pin to the exact commit or the version.
+        # uses: saranraj3195/sparkout-deployment@c4665eb5fc6ae732e5f15341125b89c3c96b9680
+        uses: saranraj3195/sparkout-deployment@v2
         with:
-          # Hostname or IP address of the server
-            host: home.oswinjerome.in
-          # Port number of the server.
-            port: 11
-          # Username for authentication. eg: root
-            username: oswin
-            # private key for either key-based or hostbased user authentication (OpenSSH format). 
-            privateKey: ${{secrets.SSH_PRIVATE_KEY}}
-          # The shell command you want to execute. Multiple commands are separated by newlines. 
-            command: ls
+          # SSH private key for authentication
+          DEPLOY_KEY: ${{secrets.SSH_PRIVATE_KEY}}
+          # SSH username
+          USERNAME: oswin
+          # IP address of the server
+          SERVER_IP: home.oswinjerome.in
+          # SSH port of the server
+          SERVER_PORT: 11
+          # Destination directory on the server
+          SERVER_DESTINATION: ~/Laravel/ikids
+
+      
