@@ -72,7 +72,7 @@ class PaymentProcessingService
 		if ($event == "payment.authorized") {
 
 			try {
-				// DB::beginTransaction();
+				DB::beginTransaction();
 				$order_id = $request->get("payload")['payment']['entity']['order_id'];
 				$payment_id = $request->get("payload")['payment']['entity']['id'];
 				$order = Order::where("razorpay_order_id", $order_id)->first();
@@ -89,7 +89,7 @@ class PaymentProcessingService
 					$product->save();
 				}
 				$order->addEvent("payment", "Payment Success", "Received payment with pay id: " . $payment_id, "system");
-				// DB::commit();
+				DB::commit();
 			} catch (\Exception $e) {
 				Log::error("Unable to process order | PaymentProcessingService::class");
 				Log::error($e);

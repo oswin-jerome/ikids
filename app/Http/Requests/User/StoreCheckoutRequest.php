@@ -22,13 +22,6 @@ class StoreCheckoutRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            "first_name" => "required|string",
-            "last_name" => "required|string",
-            "address" => "required|string",
-            "city" => "required|string",
-            "postal_code" => "required|string",
-            "phone_number" => "required|string",
-        ];
+        return [];
     }
 }

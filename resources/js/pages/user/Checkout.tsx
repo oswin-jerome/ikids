@@ -8,25 +8,24 @@ import { Separator } from '@/components/ui/separator';
 import WebLayout from '@/layouts/web-layout';
 import { Cart, CartItem } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/react';
-import { ArrowLeft, CreditCard, Lock } from 'lucide-react';
+import { ArrowLeft, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { RazorpayOrderOptions, useRazorpay } from 'react-razorpay';
+import { toast } from 'sonner';
 
-export default function Component({
-    cartItems,
-    cart,
-    order_id,
-    db_order_id,
-}: {
-    cartItems: CartItem[];
-    cart: Cart;
-    order_id: string;
+type FieldNames = 'first_name' | 'last_name' | 'address' | 'city' | 'postal_code' | 'phone_number';
+type OrderRes = {
+    orderId: string;
     db_order_id: string;
-}) {
+    message: string;
+    errors?: Partial<Record<FieldNames, string>>;
+};
+
+export default function Component({ cartItems, cart }: { cartItems: CartItem[]; cart: Cart; order_id: string; db_order_id: string }) {
     const [isProcessing, setIsProcessing] = useState(false);
     const { error, isLoading, Razorpay } = useRazorpay();
 
-    const { post, processing, errors, data, setData } = useForm({
+    const { processing, errors, data, setData, setError } = useForm({
         first_name: '',
         last_name: '',
         address: '',
@@ -35,15 +34,55 @@ export default function Component({
         phone_number: '',
     });
 
-    const handleAddressSubmit = () => {
-        post(route('user.checkout'), {
-            onSuccess: (res) => {
-                console.log(res);
+    const handleAddressSubmit = async () => {
+        const csrfMetaTag = document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement | null;
+        if (!csrfMetaTag || !csrfMetaTag.content) {
+            return;
+        }
+        const csrfToken = csrfMetaTag.content;
+        const res = await fetch(route('user.checkout'), {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                Accept: 'application/json',
+                'X-CSRF-TOKEN': csrfToken,
             },
+            body: JSON.stringify({
+                ...data,
+            }),
+        });
+        console.log(res);
+        if (!res.ok) {
+            const errorData: OrderRes = await res.json();
+            if (errorData.errors) {
+                (Object.keys(errorData.errors) as FieldNames[]).forEach((key) => {
+                    const message = errorData.errors?.[key];
+                    if (message) {
+                        setError(key, message);
+                    }
+                });
+            }
+            toast.error('Failed to create order', {
+                description: errorData.message || 'An error occurred while creating your subscription order.',
+            });
+            return;
+        }
+        const resData: OrderRes = await res.json();
+        console.log(resData);
+        if (resData.orderId === undefined) {
+            toast.error('Unable to create razorpay order', {
+                description: resData.message || 'An error occurred while creating your subscription order.',
+            });
+            return;
+        }
+
+        handleRazorpayPayment({
+            db_order_id: resData.db_order_id,
+            order_id: resData.orderId,
         });
     };
 
-    const handleRazorpayPayment = async () => {
+    const handleRazorpayPayment = async ({ order_id, db_order_id }: { order_id: string; db_order_id: string }) => {
         const options: RazorpayOrderOptions = {
             key: 'rzp_test_Wok0nv9mU8B1IW',
             amount: 50000, // Amount in paise
@@ -222,30 +261,17 @@ export default function Component({
                                         <span className="text-muted-foreground text-sm">Secure payment</span>
                                     </div>
 
-                                    {order_id == null && (
-                                        <Button
-                                            className="w-full"
-                                            size="lg"
-                                            disabled={processing}
-                                            onClick={() => {
-                                                handleAddressSubmit();
-                                            }}
-                                        >
-                                            Checkout
-                                        </Button>
-                                    )}
-                                    {order_id && (
-                                        <Button onClick={handleRazorpayPayment} disabled={isProcessing || isLoading} className="w-full" size="lg">
-                                            {isProcessing ? (
-                                                'Processing...'
-                                            ) : (
-                                                <>
-                                                    <CreditCard className="mr-2 h-4 w-4" />
-                                                    Pay with Razorpay
-                                                </>
-                                            )}
-                                        </Button>
-                                    )}
+                                    <Button
+                                        className="w-full"
+                                        size="lg"
+                                        disabled={isProcessing || processing || isLoading}
+                                        onClick={() => {
+                                            handleAddressSubmit();
+                                        }}
+                                    >
+                                        Checkout & Pay
+                                    </Button>
+
                                     {error}
 
                                     <div className="text-muted-foreground flex items-center justify-center gap-2 text-xs">

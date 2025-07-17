@@ -82,9 +82,9 @@ const WebLayout = ({ children }: { children: ReactNode }) => {
                         </NavigationMenu>
                     </ul>
                     <div className="flex items-center gap-4">
-                        <Button className="hidden lg:inline" variant={'subscribe'}>
+                        {/* <Button className="hidden lg:inline" variant={'subscribe'}>
                             Subscribe
-                        </Button>
+                        </Button> */}
                         {auth.user == null && (
                             <Link href={route('login')}>
                                 <Button className="cursor-pointer" variant={'outline'}>
