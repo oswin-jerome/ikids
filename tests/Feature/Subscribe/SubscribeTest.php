@@ -22,14 +22,6 @@ test('Able to place razorpay order', function () {
 	$product = Product::factory()->create();
 	$subscribableProduct = SubscribableProduct::factory()->create();
 
-	$mock = Mockery::mock(RazorpayService::class);
-	$mock->shouldReceive('createOrder')->andReturn((object)[
-		'id' => 'order_123',
-		"subscribable_product_id" => $subscribableProduct->id,
-		"months" => 1,
-	]);
-	$this->app->instance(RazorpayService::class, $mock);
-
 	$response = $this->actingAs($user)
 		->post(route('user.subscriptions.create_order'), [
 			'subscribable_product_id' => $subscribableProduct->id,

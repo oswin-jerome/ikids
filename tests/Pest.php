@@ -11,9 +11,26 @@
 |
 */
 
+use App\Services\RazorpayService;
+use Illuminate\Support\Facades\Log;
+
 pest()->extend(Tests\TestCase::class)
     ->use(Illuminate\Foundation\Testing\RefreshDatabase::class)
     ->in('Feature');
+
+uses()->beforeEach(function () {
+    $razorpay = Mockery::mock(RazorpayService::class);
+    $razorpay->shouldReceive('createOrder')->andReturnUsing(function ($args) {
+        Log::info("Mocking payment");
+        return (object)[
+            'id' => 'order_123',
+            "subscribable_product_id" => $args['notes']['subscribable_product_id'] ?? null,
+            "months" => 1,
+        ];
+    });
+    $this->app->instance(RazorpayService::class, $razorpay);
+    $this->razorpay = $razorpay;
+})->in(__DIR__);
 
 /*
 |--------------------------------------------------------------------------
@@ -45,3 +62,17 @@ function something()
 {
     // ..
 }
+
+// function mockPayment(){
+//     $razorpay = Mockery::mock(RazorpayService::class);
+//     $razorpay->shouldReceive('createOrder')->andReturnUsing(function ($args) {
+//         Log::info($args);
+//         return (object)[
+//             'id' => 'order_123',
+//             "subscribable_product_id" => $args['notes']['subscribable_product_id'] ?? null,
+//             "months" => 1,
+//         ];
+//     });
+//     $this->app->instance(RazorpayService::class, $razorpay);
+//     $this->razorpay = $razorpay;
+// }
