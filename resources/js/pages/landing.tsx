@@ -1,6 +1,5 @@
 import SeoHead from '@/components/SeoHead';
 import { Testimonial14 } from '@/components/testimonial14';
-import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Separator } from '@/components/ui/separator';
 import WebLayout from '@/layouts/web-layout';
@@ -23,9 +22,7 @@ export default function Landing({ categories }: { categories: ProductCategory[] 
                 <CarouselContent>
                     <CarouselItem className="relative isolate">
                         <img src="/assets/images/Banner_1.jpg" className="min-h-[300px] object-cover" />
-                        <div className="absolute right-0 bottom-10 left-0 z-10 container">
-                            <Button variant={'subscribe'}>Subscribe Now</Button>
-                        </div>
+                        <div className="absolute right-0 bottom-10 left-0 z-10 container"></div>
                     </CarouselItem>
                     <CarouselItem>
                         <img src="/assets/images/Banner_2.jpg" className="min-h-[300px] object-cover" />
