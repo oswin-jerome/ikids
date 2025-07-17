@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Separator } from '@/components/ui/separator';
 import WebLayout from '@/layouts/web-layout';
+import { ProductCategory } from '@/types';
 import BooksBlock from './Landing/BooksBlock';
 import ScikidBlock from './Landing/ScikidBlock';
 import SkippyBlock from './Landing/SkippyBlock';
 
-export default function Landing() {
+export default function Landing({ categories }: { categories: ProductCategory[] }) {
     // const { auth } = usePage<SharedData>().props;
 
     return (
@@ -36,7 +37,9 @@ export default function Landing() {
             <SkippyBlock />
             <ScikidBlock />
             <Separator />
-            <BooksBlock title="Activity Books" />
+            {categories.map((cat) => {
+                return <BooksBlock products={cat.products ?? []} key={'p_c_' + cat.id} title={cat.name} />;
+            })}
             <div className="bg-accent">
                 <Testimonial14 />
             </div>

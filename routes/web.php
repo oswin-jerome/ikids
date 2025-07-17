@@ -9,12 +9,15 @@ use App\Http\Controllers\Admin\AdminSubscriptionController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
 Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])->group(function () {
+
     Route::get('dashboard', function () {
+
         return Inertia::render('dashboard');
     })->name('dashboard');
 });

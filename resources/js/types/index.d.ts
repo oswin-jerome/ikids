@@ -179,4 +179,5 @@ export interface ProductCategory {
     slug: string;
     created_at: Date;
     updated_at: Date;
+    products?: Product[];
 }

@@ -6,12 +6,14 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Requests\User\StoreCheckoutRequest;
 use App\Http\Resources\CartItemResource;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\ProductCategoryResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderEvent;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\SubscribableProduct;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +23,10 @@ use Inertia\Inertia;
 use Razorpay\Api\Api;
 
 Route::get('/', function () {
-	return Inertia::render('landing');
+	$categories = ProductCategory::with("products")->get();
+	return Inertia::render('landing', [
+		"categories" => ProductCategoryResource::collection($categories)
+	]);
 })->name('home');
 
 Route::get('/skippy', function () {

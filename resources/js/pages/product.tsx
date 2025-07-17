@@ -31,6 +31,7 @@ const ProductPage = ({ product }: { product: Product }) => {
                             method="post"
                         > */}
                         <Button
+                            disabled={product.current_stock <= 0}
                             onClick={() => {
                                 router.post(
                                     route('user.cart.add', product.id),
@@ -40,7 +41,7 @@ const ProductPage = ({ product }: { product: Product }) => {
                                     },
                                 );
                             }}
-                            className="mt-4 w-full"
+                            className="bg-secondary mt-4 w-full rounded-full"
                         >
                             Add to Cart
                         </Button>
