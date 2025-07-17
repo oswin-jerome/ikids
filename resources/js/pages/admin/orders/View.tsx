@@ -303,10 +303,12 @@ export default function Component({ order, orderItems, orderEvents }: { order: O
                                     <Mail className="mr-2 h-4 w-4" />
                                     Send Email Update
                                 </Button>
-                                <Button variant="outline" className="w-full justify-start">
-                                    <Package className="mr-2 h-4 w-4" />
-                                    Print Shipping Label
-                                </Button>
+                                <a href={route('admin.orders.shipping.label', order.order_id)} className="block" target="_blank">
+                                    <Button variant="outline" className="w-full justify-start">
+                                        <Package className="mr-2 h-4 w-4" />
+                                        Print Shipping Label
+                                    </Button>
+                                </a>
                                 <Button variant="outline" className="w-full justify-start">
                                     <RefreshCw className="mr-2 h-4 w-4" />
                                     Refund Order

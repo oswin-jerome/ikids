@@ -24,6 +24,9 @@ Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])->prefix("admin
     Route::resource("stocks", AdminStockController::class);
     Route::resource("orders", AdminOrdersController::class);
     Route::post("orders/{order}/status", [AdminOrdersController::class, 'updateStatus'])->name("orders.update.status");
+    Route::get('orders/{order:order_id}/shipping-label', [AdminOrdersController::class, 'showShippingLabel'])
+        ->name('orders.shipping.label');
+
     Route::resource("subscribable-products", AdminSubscribableProductController::class);
     Route::resource("subscriptions", AdminSubscriptionController::class);
     Route::resource("users", AdminCustomerController::class);

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderItemResource;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Services\PdfGeneratorService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -118,5 +119,11 @@ class AdminOrdersController extends Controller
     public function destroy(Order $order)
     {
         //
+    }
+
+    public function showShippingLabel(Order $order, PdfGeneratorService $pdfGeneratorService)
+    {
+
+        return $pdfGeneratorService->generateOrderShippingLabel($order);
     }
 }
