@@ -12,27 +12,20 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: ssh-scp-ssh-pipelines
-        # You may pin to the exact commit or the version.
-        # uses: cross-the-world/ssh-scp-ssh-pipelines@78e864b4890087a58248ff39320406971ca88b89
-        uses: cross-the-world/ssh-scp-ssh-pipelines@v1.1.4
+      - name: Install SSH client
+        run: sudo apt-get update && sudo apt-get install -y openssh-client
+
+      - name: Add SSH key
+        uses: webfactory/ssh-agent@v0.8.0
         with:
-          # ssh remote host
-          host: home.oswinjerome.in
-          # ssh remote port
-          port: 11
-          # ssh remote user
-          user: oswin
-          # content of ssh private key. ex raw content of ~/.ssh/id_rsa
-          key: ${{secrets.SSH_PRIVATE_KEY}}
-          # # ssh remote password
-          # # connection timeout to remote host
-          # connect_timeout: # optional, default is 30s
-          # # execute pre-commands before scp
-          # first_ssh: # optional
-          # # scp from local to remote
-          # scp: # optional
-          # # execute post-commands after scp
-          # last_ssh: # optional
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Run commands on remote server
+        run: |
+          ssh -o StrictHostKeyChecking=no oswin@home.oswinjerome.in << 'EOF'
+            cd ~/
+            ls
+            
+          EOF
           
       
