@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class UpdateProductRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -21,8 +22,16 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
+        $product = $this->route('product');
         return [
-            //
+            "sku" => "required|string|unique:products,sku," . $product->id,
+            "name" => "required|string",
+            "description" => "required|string",
+            "type" => "nullable|in:single,combo",
+            "actual_price" => "required|numeric",
+            "selling_price" => "required|numeric",
+            "cover" => "nullable|image",
+            "product_category_id" => "nullable|exists:product_categories,id"
         ];
     }
 }

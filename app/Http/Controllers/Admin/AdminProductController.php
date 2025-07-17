@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Inertia\Inertia;
 
 class AdminProductController extends Controller
@@ -15,7 +16,7 @@ class AdminProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with("category")->get();
         return Inertia::render("admin/products/Index", [
             "products" => $products
         ]);
@@ -27,7 +28,9 @@ class AdminProductController extends Controller
     public function create()
     {
 
-        return Inertia::render("admin/products/Create");
+        return Inertia::render("admin/products/Create", [
+            "categories" => ProductCategory::all(),
+        ]);
     }
 
     /**
@@ -36,6 +39,9 @@ class AdminProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $data = $request->except("cover");
+        if ($request->get("product_category_id") == "null") {
+            $request->unset("product_category_id");
+        }
         $product = Product::create($data);
         if ($request->hasFile("cover")) {
             $product
@@ -60,7 +66,10 @@ class AdminProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return Inertia::render("admin/products/Edit", [
+            "categories" => ProductCategory::all(),
+            "product" => $product
+        ]);
     }
 
     /**
@@ -68,7 +77,13 @@ class AdminProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
-        //
+        $data = $request->except("cover");;
+        if ($request->get("product_category_id") == "null") {
+            $data["product_category_id"] = null;
+        }
+        $product->update($data);
+
+        return redirect()->back();
     }
 
     /**

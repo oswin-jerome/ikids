@@ -57,6 +57,8 @@ export interface Product {
     updated_at: Date;
 
     cover: string;
+    category: ProductCategory;
+    product_category_id: number;
 }
 
 export interface Order {
@@ -169,4 +171,12 @@ export interface SubscribableProduct {
     created_at: Date;
     updated_at: Date;
     subscriptions_count: number;
+}
+
+export interface ProductCategory {
+    id: number;
+    name: string;
+    slug: string;
+    created_at: Date;
+    updated_at: Date;
 }

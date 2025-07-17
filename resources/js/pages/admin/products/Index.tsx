@@ -1,8 +1,10 @@
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { BreadcrumbItem, Product } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { Edit } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -22,8 +24,10 @@ const AdminProductsIndex = ({ products }: { products: Product[] }) => {
                         <TableHead>Stock</TableHead>
                         <TableHead>SKU</TableHead>
                         <TableHead>Type</TableHead>
+                        <TableHead>Category</TableHead>
                         <TableHead>Actual Price</TableHead>
                         <TableHead>Selling Price</TableHead>
+                        <TableHead>Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -42,8 +46,16 @@ const AdminProductsIndex = ({ products }: { products: Product[] }) => {
                                 </TableCell>
                                 <TableCell>{re.sku}</TableCell>
                                 <TableCell>{re.type}</TableCell>
+                                <TableCell>{re.category?.name}</TableCell>
                                 <TableCell>Rs. {re.actual_price}</TableCell>
                                 <TableCell>Rs. {re.selling_price}</TableCell>
+                                <TableCell>
+                                    <Link href={route('admin.products.edit', re.id)}>
+                                        <Button variant={'ghost'} size={'icon'}>
+                                            <Edit />
+                                        </Button>
+                                    </Link>
+                                </TableCell>
                             </TableRow>
                         );
                     })}

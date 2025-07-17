@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, ProductCategory } from '@/types';
+import { BreadcrumbItem, Product, ProductCategory } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -22,24 +22,24 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-const AdminProductsCreate = ({ categories }: { categories: ProductCategory[] }) => {
-    const { data, setData, processing, errors, post } = useForm<{
+const AdminProductsEdit = ({ categories, product }: { categories: ProductCategory[]; product: Product }) => {
+    const { data, setData, processing, errors, put } = useForm<{
         name: string;
         sku: string;
         description: string;
         type: string;
         selling_price: number;
         actual_price: number;
-        product_category_id: string;
+        product_category_id: string | null;
         cover: File | null | undefined;
     }>({
-        name: '',
-        sku: '',
-        description: '',
-        product_category_id: '',
-        type: 'single',
-        selling_price: 0,
-        actual_price: 0,
+        name: product.name,
+        sku: product.sku,
+        description: product.description,
+        product_category_id: product.product_category_id?.toString() ?? 'null',
+        type: product.type,
+        selling_price: product.selling_price,
+        actual_price: product.actual_price,
         cover: null,
     });
 
@@ -50,10 +50,15 @@ const AdminProductsCreate = ({ categories }: { categories: ProductCategory[] }) 
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
-                    post(route('admin.products.store'), {
+                    put(route('admin.products.update', product.id), {
+                        onBefore: () => {
+                            if (data.product_category_id === 'null') {
+                                setData('product_category_id', null);
+                            }
+                        },
                         preserveState: true,
                         onSuccess: () => {
-                            toast.success('Product Added');
+                            toast.warning('Product updated');
                             // router.
                         },
                     });
@@ -115,7 +120,7 @@ const AdminProductsCreate = ({ categories }: { categories: ProductCategory[] }) 
                         </div>
                         <div>
                             <Label>Category</Label>
-                            <Select defaultValue={data.product_category_id} onValueChange={(e) => setData('product_category_id', e)}>
+                            <Select defaultValue={data.product_category_id ?? ''} onValueChange={(e) => setData('product_category_id', e)}>
                                 <SelectTrigger>
                                     <SelectValue></SelectValue>
                                 </SelectTrigger>
@@ -135,7 +140,7 @@ const AdminProductsCreate = ({ categories }: { categories: ProductCategory[] }) 
                         </div>
                     </CardContent>
                     <CardFooter>
-                        <Button> {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}Create</Button>
+                        <Button> {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}Save</Button>
                     </CardFooter>
                 </Card>
             </form>
@@ -143,4 +148,4 @@ const AdminProductsCreate = ({ categories }: { categories: ProductCategory[] }) 
     );
 };
 
-export default AdminProductsCreate;
+export default AdminProductsEdit;

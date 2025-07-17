@@ -33,4 +33,9 @@ class Product extends Model implements HasMedia
             ->useFallbackUrl(url('/assets/images/Banner_1.jpg'))
             ->useFallbackPath(public_path('/assets/images/Banner_1.jpg'));
     }
+
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, "product_category_id", "id");
+    }
 }
