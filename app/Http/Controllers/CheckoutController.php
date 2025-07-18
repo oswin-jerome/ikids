@@ -8,6 +8,7 @@ use App\Http\Resources\CartResource;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderEvent;
+use App\Notifications\DirectOrderPlaced;
 use App\Services\RazorpayService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -110,6 +111,7 @@ class CheckoutController extends Controller
             ]);
             $order->razorpay_order_id = $data->id;
             $order->save();
+
             DB::commit();
             return response()->json([
                 "orderId" => $data->id,

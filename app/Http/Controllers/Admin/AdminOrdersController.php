@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderItemResource;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Notifications\OrderStatusChangedNotification;
 use App\Services\PdfGeneratorService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
