@@ -37,10 +37,11 @@ class PaymentProcessingService
 			$activeSubscription = $user->subscriptions()
 				->whereIn('status', ['active', 'pending'])
 				->where("transaction_id", $request->get("payload")['payment']['entity']['id'])
-				->exists();
+				->first();
 			// Check if already payment processed though callback
-			if ($activeSubscription) {
+			if ($activeSubscription != null) {
 				Log::info("Subscription already in place for user: " . $user->id);
+				$user->notify(new SubscriptionActivatedNotification($activeSubscription));
 				return response()->json([
 					'message' => "Subscription already in place."
 				]);
