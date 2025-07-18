@@ -18,7 +18,7 @@ Schedule::call(function (SubscriptionService $subscriptionService) {
     FacadesLog::info('Subscription scheduler running ' . now());
     $subscriptionService->processMonthlySubscriptions();
     FacadesLog::info('Subscription scheduler completed ' . now());
-})->everyMinute()->name('Subscription Schedulers')->withoutOverlapping();
+})->dailyAt("23:55")->name('Subscription Schedulers')->withoutOverlapping();
 
 Schedule::call(function () {
     $cutoff = Carbon::now()->subDays(2);

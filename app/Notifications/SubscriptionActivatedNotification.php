@@ -45,7 +45,7 @@ class SubscriptionActivatedNotification extends Notification implements ShouldQu
             ->line("We're excited to let you know that your subscription for **{$productName}** is now active.")
             ->line("Your subscription is valid until **{$endDate}**.")
             ->line('You’ll continue to receive your items as scheduled. We hope you enjoy them!')
-            ->action('Manage Your Subscription', url('/subscriptions'))
+            ->action('View Your Subscription', url('/subscriptions'))
             ->line('Thank you for choosing us!');
     }
 
