@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\SubscribableProduct;
 use App\Models\User;
+use App\Notifications\DirectOrderPlaced;
+use App\Notifications\PaymentReceivedNotification;
+use App\Notifications\SubscriptionActivatedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -59,6 +62,8 @@ class PaymentProcessingService
 				"city" => $address['city'] ?? "",
 				"phone_number" => $address['phone_number'] ?? "",
 			]);
+			Log::info("SubscriptionActivatedNotification");
+			$user->notify(new SubscriptionActivatedNotification($subscription));
 		}
 		Log::info("Razorpay Subscription Callback Completed");
 		return response()->json();
@@ -90,6 +95,9 @@ class PaymentProcessingService
 				}
 				$order->addEvent("payment", "Payment Success", "Received payment with pay id: " . $payment_id, "system");
 				DB::commit();
+				// TODO: Maybe combine both into one mail
+				$order->customer->notify(new DirectOrderPlaced($order));
+				$order->customer->notify(new PaymentReceivedNotification($order));
 			} catch (\Exception $e) {
 				Log::error("Unable to process order | PaymentProcessingService::class");
 				Log::error($e);
