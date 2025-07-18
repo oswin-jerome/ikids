@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSubscribableProductRequest;
 use App\Http\Requests\UpdateSubscribableProductRequest;
+use App\Models\Product;
 use App\Models\SubscribableProduct;
 
 class AdminSubscribableProductController extends Controller
@@ -45,6 +46,7 @@ class AdminSubscribableProductController extends Controller
     {
         return inertia('admin/SubscribableProduct/Show', [
             'subscribableProduct' => $subscribableProduct,
+            "products" => Product::all(["id", "name"])
         ]);
     }
 

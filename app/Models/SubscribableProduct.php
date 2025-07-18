@@ -16,4 +16,9 @@ class SubscribableProduct extends Model
     {
         return $this->hasMany(Subscription::class);
     }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
+    }
 }
