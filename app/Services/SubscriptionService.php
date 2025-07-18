@@ -15,9 +15,7 @@ class SubscriptionService
 		// TODO: add product logic
 		// TODO: Prevent duplicate orders 
 		// TODO: Update subscription status
-		// TODO: Update stock
 		// TODO: Send email notification
-		// TODO: get address from user before subscription
 		// TODO: mind price length
 
 		$now = now();
