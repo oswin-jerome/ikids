@@ -171,6 +171,7 @@ export interface SubscribableProduct {
     created_at: Date;
     updated_at: Date;
     subscriptions_count: number;
+    product_id?: number;
 }
 
 export interface ProductCategory {

@@ -30,6 +30,7 @@ class UpdateSubscribableProductRequest extends FormRequest
             'slug' => ['required', 'string', 'max:255'],
             'sku' => ['required', 'string', 'max:100'],
             'is_active' => ['required', 'boolean'],
+            'product_id' => "required|exists:products,id",
         ];
     }
 }

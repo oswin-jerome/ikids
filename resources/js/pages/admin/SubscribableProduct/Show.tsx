@@ -3,14 +3,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem, SubscribableProduct } from '@/types';
+import { BreadcrumbItem, Product, SubscribableProduct } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import { toast } from 'sonner';
 
-const AdminSubscribableProduct = ({ subscribableProduct }: { subscribableProduct: SubscribableProduct }) => {
+const AdminSubscribableProduct = ({ subscribableProduct, products }: { subscribableProduct: SubscribableProduct; products: Product[] }) => {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'Subscribable Products',
@@ -29,11 +30,17 @@ const AdminSubscribableProduct = ({ subscribableProduct }: { subscribableProduct
         slug: subscribableProduct.slug,
         sku: subscribableProduct.sku,
         is_active: subscribableProduct.is_active,
+        product_id: subscribableProduct.product_id,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         put(route('admin.subscribable-products.update', subscribableProduct.id), {
+            onBefore: () => {
+                if (data.product_id === 0) {
+                    setData('product_id', undefined);
+                }
+            },
             preserveScroll: true,
             onSuccess: () => {
                 toast.success('Subscribable Product updated successfully');
@@ -72,8 +79,27 @@ const AdminSubscribableProduct = ({ subscribableProduct }: { subscribableProduct
                         </div>
                         <div>
                             <Label>Price Per Month</Label>
-                            <Input type="number" defaultValue={data.price_per_month} onChange={(e) => setData('price_per_month', e.target.value)} />
+                            <Input
+                                type="number"
+                                defaultValue={data.price_per_month}
+                                onChange={(e) => setData('price_per_month', e.target.valueAsNumber)}
+                            />
                             <InputError message={errors.price_per_month} />
+                        </div>
+                        <div>
+                            <Label>Product</Label>
+                            <Select defaultValue={data.product_id?.toString() ?? '0'} onValueChange={(e) => setData('product_id', parseInt(e))}>
+                                <SelectTrigger>
+                                    <SelectValue></SelectValue>
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="0">------</SelectItem>
+                                    {products.map((product) => {
+                                        return <SelectItem value={product.id.toString()}>{product.name}</SelectItem>;
+                                    })}
+                                </SelectContent>
+                            </Select>
+                            <InputError message={errors.is_active} />
                         </div>
                         <div>
                             <Label>Is Active</Label>
