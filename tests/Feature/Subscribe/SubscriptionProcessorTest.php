@@ -31,7 +31,6 @@ it('processes monthly subscriptions and creates orders', function () {
 			'end_date' => now()->addMonth(),
 			'amount' => 100,
 			'months' => 12,
-			'status' => 'active',
 			'payment_status' => 'completed',
 			'transaction_id' => 'tx_123',
 			"first_name" => "Oswin",

@@ -14,8 +14,11 @@ use Illuminate\Support\Facades\Log;
 
 class PaymentProcessingService
 {
+
 	function  processSubscriptionPayments(Request $request)
 	{
+		$service = app(SubscriptionService::class);
+
 		Log::info("Razorpay Subscription Callback");
 		Log::info($request);
 		$event = $request->get("event");
@@ -35,7 +38,7 @@ class PaymentProcessingService
 			$subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
 
 			$activeSubscription = $user->subscriptions()
-				->whereIn('status', ['active', 'pending'])
+				->where("end_date", '>', now())
 				->where("transaction_id", $request->get("payload")['payment']['entity']['id'])
 				->first();
 			// Check if already payment processed though callback
@@ -47,22 +50,8 @@ class PaymentProcessingService
 				]);
 			}
 			$address = json_decode($notes['address'] ?? "", true) ?? [];
-			$subscription = $user->subscriptions()->create([
-				'subscribable_product_id' => $subscribableProductId,
-				"start_date" => now(),
-				"end_date" => now()->addMonths($months),
-				"amount" => $subscribableProduct->price_per_month * $months,
-				"transaction_id" => $request->get("payload")['payment']['entity']['id'],
-				"months" => $months,
-				"status" => 'active',
-				"payment_status" => 'completed',
-				"first_name" => $address['first_name'] ?? "",
-				"last_name" => $address['last_name'] ?? "",
-				"address" => $address['address'] ?? "",
-				"postal_code" => $address['postal_code'] ?? "",
-				"city" => $address['city'] ?? "",
-				"phone_number" => $address['phone_number'] ?? "",
-			]);
+			$subscription = $service->createSubscription($user, $subscribableProduct, $months, $address, $request->get("payload")['payment']['entity']['id']);
+
 			Log::info("SubscriptionActivatedNotification");
 			$user->notify(new SubscriptionActivatedNotification($subscription));
 		}
