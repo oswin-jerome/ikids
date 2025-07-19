@@ -16,15 +16,17 @@ class SubscriptionService
 	function processMonthlySubscriptions()
 	{
 		Log::info("Started ");
-		// TODO: add product logic
-		// TODO: Prevent duplicate orders 
-		// TODO: Update subscription status
-		// TODO: Send email notification
 		// TODO: mind price length
 
-		$now = now();
+		$now = Carbon::now()->endOfMonth();
 
-		$activeSubscriptions = \App\Models\Subscription::where("end_date", ">=", $now)->with("subscribableProduct")->get();
+		$activeSubscriptions = \App\Models\Subscription::where("end_date", ">", $now)
+			->where(function ($query) use ($now) {
+				$query->whereNull('last_processed')
+					->orWhereMonth('last_processed', '!=', $now->month)
+					->orWhereYear('last_processed', '!=', $now->year);
+			})
+			->with("subscribableProduct")->get();
 		foreach ($activeSubscriptions as $subscription) {
 			Log::info("Processing subscription for user: {$subscription->user_id}, plan: {$subscription->id}");
 			$subscribableProduct = $subscription->subscribableProduct;
@@ -54,6 +56,8 @@ class SubscriptionService
 				$product->current_stock = $product->current_stock - 1;
 				$product->save(); // saving immediately thinking what happens if this breaks at some point
 			}
+			$subscription->last_processed = Carbon::now();
+			$subscription->save();
 			$order->addEvent("order", "Order Placed", "Subscription scheduler placed an order", "system");
 			$order->customer->notify(new SubscriptionOrderPlacedNotification($subscription, $order));
 		}
