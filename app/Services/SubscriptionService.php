@@ -4,7 +4,10 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\SubscribableProduct;
+use App\Models\User;
 use App\Notifications\SubscriptionOrderPlacedNotification;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class SubscriptionService
@@ -54,5 +57,28 @@ class SubscriptionService
 			$order->addEvent("order", "Order Placed", "Subscription scheduler placed an order", "system");
 			$order->customer->notify(new SubscriptionOrderPlacedNotification($subscription, $order));
 		}
+	}
+
+	function createSubscription(User $user, SubscribableProduct $subscribableProduct, $months, $address, $razorpayPaymentId)
+	{
+		$now = Carbon::now()->endOfMonth();
+		$end = Carbon::now()->endOfMonth()->addMonths($months);
+		$subscription = $user->subscriptions()->create([
+			'subscribable_product_id' => $subscribableProduct->id,
+			"start_date" => $now,
+			"end_date" => $end,
+			"amount" => $subscribableProduct->price_per_month * $months,
+			"transaction_id" => $razorpayPaymentId,
+			"months" => $months,
+			"first_name" => $address['first_name'] ?? "",
+			"last_name" => $address['last_name'] ?? "",
+			"address" => $address['address'] ?? "",
+			"postal_code" => $address['postal_code'] ?? "",
+			"city" => $address['city'] ?? "",
+			"phone_number" => $address['phone_number'] ?? "",
+			"payment_status" => 'completed',
+		]);
+
+		return $subscription;
 	}
 }

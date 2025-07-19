@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateSubscriptionRequest;
 use App\Services\RazorpayService;
 use App\Models\SubscribableProduct;
 use App\Models\Subscription;
+use App\Services\SubscriptionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -49,8 +50,9 @@ class SubscriptionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSubscriptionRequest $request)
+    public function store(StoreSubscriptionRequest $request, SubscriptionService $subscriptionService)
     {
+        // TODO: start date and end date should be auto moved to end of month
         $razorpayPaymentId = $request->input('razorpay_payment_id');
         $razorpayOrderId = $request->input('razorpay_order_id');
         $razorpaySignature = $request->input('razorpay_signature');
@@ -114,22 +116,8 @@ class SubscriptionController extends Controller
         ]);
         $address = json_decode($notes['address'], true) ?? [];
         $subscribableProduct = SubscribableProduct::findOrFail($subscribableProductId);
-        $subscription = $user->subscriptions()->create([
-            'subscribable_product_id' => $subscribableProductId,
-            "start_date" => now(),
-            "end_date" => now()->addMonths($months),
-            "amount" => $subscribableProduct->price_per_month * $months,
-            "transaction_id" => $razorpayPaymentId,
-            "months" => $months,
-            "status" => 'active',
-            "first_name" => $address['first_name'],
-            "last_name" => $address['last_name'],
-            "address" => $address['address'],
-            "postal_code" => $address['postal_code'],
-            "city" => $address['city'],
-            "phone_number" => $address['phone_number'],
-            "payment_status" => 'completed',
-        ]);
+        $subscription = $subscriptionService->createSubscription($user, $subscribableProduct, $months, $address, $razorpayPaymentId);
+
 
         return response()->json([
             'message' => 'Subscription created successfully.',
@@ -185,7 +173,7 @@ class SubscriptionController extends Controller
         $user = Auth::user();
 
         $activeSubscription = $request->user()->subscriptions()
-            ->whereIn('status', ['active'])
+            ->where("end_date", '>', now())
             ->where('subscribable_product_id', $subscribableProductId)
             ->exists();
         if ($activeSubscription) {

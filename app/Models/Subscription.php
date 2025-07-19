@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,6 +13,22 @@ class Subscription extends Model
     use HasFactory;
 
     protected $guarded = [];
+    protected $appends = ['status', 'months_left'];
+
+
+    protected function status(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Carbon::now()->lt($this->end_date) ? "active" : "expired",
+        );
+    }
+
+    protected function monthsLeft(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => ceil(max(0, now()->diffInMonths($this->end_date, false))),
+        );
+    }
 
     public function customer()
     {

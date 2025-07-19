@@ -21,7 +21,6 @@ class SubscriptionFactory extends Factory
             'subscribable_product_id' => \App\Models\SubscribableProduct::inRandomOrder()->first()->id ?? \App\Models\SubscribableProduct::factory(),
             'start_date' => $this->faker->date(),
             'end_date' => $this->faker->optional()->date(),
-            'status' => $this->faker->randomElement(['pending', 'active', 'cancelled', 'expired']),
             'payment_status' => $this->faker->randomElement(['pending', 'completed', 'canceled']),
             'amount' => $this->faker->randomFloat(2, 10, 1000),
             'transaction_id' => $this->faker->optional()->uuid(),
