@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Notifications\SubscriptionOrderPlacedNotification;
 use Illuminate\Support\Facades\Log;
 
 class SubscriptionService
@@ -51,6 +52,7 @@ class SubscriptionService
 				$product->save(); // saving immediately thinking what happens if this breaks at some point
 			}
 			$order->addEvent("order", "Order Placed", "Subscription scheduler placed an order", "system");
+			$order->customer->notify(new SubscriptionOrderPlacedNotification($subscription, $order));
 		}
 	}
 }
