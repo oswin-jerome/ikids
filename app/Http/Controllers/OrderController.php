@@ -102,6 +102,11 @@ class OrderController extends Controller
      */
     public function show(Order $order)
     {
+        $user = Auth::user();
+        if ($user->id != $order->customer_id && $user->role != "admin") {
+            abort(401);
+        }
+
         $orderItems = $order->orderItems()->with("product")->get();
         $orderEvents = $order->orderEvents;
 
@@ -117,7 +122,10 @@ class OrderController extends Controller
      */
     public function showInvoice(Order $order, PdfGeneratorService $pdfGeneratorService)
     {
-
+        $user = Auth::user();
+        if ($user->id != $order->customer_id && $user->role != "admin") {
+            abort(401);
+        }
         return $pdfGeneratorService->generateOrderInvoice($order);
     }
 
