@@ -8,19 +8,41 @@ use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\ProductCategory;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
+
 
 class AdminProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+
+    public function index(Request $request)
     {
-        $products = Product::with("category")->get();
-        return Inertia::render("admin/products/Index", [
-            "products" => $products
+        $query = Product::with('category');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('sku', 'like', "%{$search}%");
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('product_category_id', $request->category_id);
+        }
+
+        $products = $query->paginate(10)->withQueryString();
+
+        $categories = ProductCategory::select('id', 'name')->get();
+
+        return Inertia::render('admin/products/Index', [
+            'products' => $products,
+            'categories' => $categories,
+            'filters' => $request->only(['search', 'category_id'])
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
